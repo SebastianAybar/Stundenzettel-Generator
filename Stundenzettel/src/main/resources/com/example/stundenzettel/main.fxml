@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="145.0" text="Excel Liste" />
+      <Button layoutX="172.0" layoutY="14.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="145.0" text="Einzelerstellung" />
+      <Label alignment="TOP_RIGHT" layoutX="37.0" layoutY="83.0" prefHeight="36.0" prefWidth="50.0" styleClass="text-container" text="Datei:" />
+      <TextField layoutX="93.0" layoutY="78.0" prefHeight="28.0" prefWidth="250.0" promptText="hier können Sie den Pfad rein kopieren" styleClass="path-container" />
+   </children>
+</Pane>

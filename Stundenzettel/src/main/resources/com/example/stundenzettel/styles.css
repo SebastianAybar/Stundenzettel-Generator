@@ -1,0 +1,12 @@
+
+.text-container {
+    -fx-background-color: transparent; /* Hintergrundfarbe auf transparent setzen */
+    -fx-background-insets: 0; /* Rand auf 0 setzen */
+    -fx-border-width: 0; /* Rahmenbreite auf 0 setzen */
+    -fx-padding: 0; /* Innenabstand auf 0 setzen */
+    -fx-text-fill: black; /* Textfarbe auf Schwarz setzen */
+    -fx-font-weight: bold; /* Text auf fett setzen */
+}
+
+.path-container {
+}
