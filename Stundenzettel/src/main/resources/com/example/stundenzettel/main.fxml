@@ -2,31 +2,44 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
-      <children>
-      <HBox styleClass="button-selection-container" layoutX="14.0" layoutY="14.0" prefHeight="56.0" prefWidth="344.0">
-         <children>
-               <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="145.0" styleClass="button-selection" text="Excel Liste" />
-               <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="145.0" styleClass="button-selection" text="Einzelerstellung" />
-         </children>
-      </HBox>
-         <Button layoutX="464.0" layoutY="325.0" mnemonicParsing="false" styleClass="text-button-container" text="OK" />
-         <Button layoutX="458.0" layoutY="137.0" mnemonicParsing="false" prefHeight="28.0" styleClass="icon-button-container" text="ICON" />
-         <Button layoutX="458.0" layoutY="79.0" mnemonicParsing="false" prefHeight="28.0" styleClass="icon-button-container" text="ICON" />
-         <Label alignment="TOP_RIGHT" layoutX="37.0" layoutY="83.0" prefHeight="36.0" prefWidth="50.0" styleClass="label-container" text="Datei:" />
-         <Label layoutX="56.0" layoutY="141.0" styleClass="label-container" text="Ausgabeverzeichnis:" />
-         <TextField layoutX="93.0" layoutY="79.0" prefHeight="28.0" prefWidth="358.0" promptText="Hier können Sie den Pfad der Excel Liste eingeben." styleClass="textfield-container">
-         <font>
-            <Font size="11.0" />
-         </font></TextField>
-         <TextField layoutX="186.0" layoutY="137.0" prefHeight="28.0" prefWidth="265.0" promptText="Hier können Sie das Ausgabeverzeichnis eingeben." styleClass="textfield-container">
-         <font>
-            <Font size="11.0" />
-         </font></TextField>
-         <CheckBox layoutX="172.0" layoutY="290.0" mnemonicParsing="false" text="Datei ersetzen?" />
-         <Separator layoutX="55.0" layoutY="314.0" prefHeight="3.0" prefWidth="446.0" styleClass="seperator-container" />
-         <Separator layoutX="55.0" layoutY="118.0" prefHeight="3.0" prefWidth="446.0" styleClass="seperator-container" />
-      </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="685.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox styleClass="button-selection-container" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" alignment="CENTER_LEFT" spacing="10">
+            <children>
+                <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="145.0" styleClass="button-selection" text="Excel Liste" />
+                <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="145.0" styleClass="button-selection" text="Einzelerstellung" />
+            </children>
+        </HBox>
+        <HBox alignment="center" layoutX="62.0" layoutY="92.0" prefHeight="43.0" prefWidth="487.0" spacing="10" styleClass="input-container">
+            <children>
+                <Label alignment="CENTER_RIGHT" prefHeight="36.0" prefWidth="50.0" styleClass="label" text="Datei:" />
+                <TextField prefHeight="28.0" prefWidth="366.0" promptText="Hier können Sie den Pfad der Excel Liste eingeben." styleClass="textfield" />
+                <Button mnemonicParsing="false" prefHeight="28.0" styleClass="icon-button" text="ICON" />
+            </children>
+        </HBox>
+        <HBox alignment="CENTER_RIGHT" layoutX="72.0" layoutY="160.0" prefHeight="25.0" prefWidth="535.0" styleClass="seperator-container">
+            <children>
+                <Separator prefHeight="20.0" prefWidth="524.0" styleClass="seperator" />
+            </children>
+        </HBox>
+        <VBox layoutX="86.0" layoutY="200.0" prefHeight="60.0" prefWidth="519.0" styleClass="output-container">
+            <children>
+                <HBox alignment="CENTER_LEFT" maxHeight="43.0" minHeight="43.0" prefHeight="43.0" prefWidth="561.0" spacing="10">
+                    <Label alignment="TOP_LEFT" styleClass="label" text="Ausgabeverzeichnis:" />
+                    <TextField prefHeight="28.0" prefWidth="289.0" promptText="Hier können Sie das Ausgabeverzeichnis eingeben." styleClass="textfield" />
+                    <Button mnemonicParsing="false" prefHeight="28.0" styleClass="icon-button" text="ICON" />
+                </HBox>
+                <HBox alignment="TOP_RIGHT" prefHeight="17.0" prefWidth="525.0">
+                    <CheckBox alignment="CENTER_RIGHT" mnemonicParsing="false" text="Datei ersetzen?" />
+                </HBox>
+            </children>
+        </VBox>
+        <VBox alignment="CENTER_RIGHT" layoutX="72.0" layoutY="300.0" prefHeight="33.0" prefWidth="535.0" spacing="5" styleClass="seperator-container">
+            <children>
+                <Separator prefHeight="20.0" prefWidth="446.0" styleClass="seperator" />
+                <Button alignment="CENTER_RIGHT" contentDisplay="CENTER" mnemonicParsing="false" styleClass="icon-button" text="OK" />
+            </children>
+        </VBox>
+    </children>
 </AnchorPane>

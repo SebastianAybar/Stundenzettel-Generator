@@ -11,13 +11,15 @@ public class main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(main.class.getResource("main.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 525, 400);
+        Scene scene = new Scene(fxmlLoader.load());
         //scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         String css = this.getClass().getResource("styles.css").toExternalForm();
         scene.getStylesheets().add(css);
         stage.setTitle("Stundenzettel Generator");
         stage.setScene(scene);
         stage.show();
+        stage.setMinWidth(685);
+        stage.setMinHeight(415);
     }
 
     public static void main(String[] args) {

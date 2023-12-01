@@ -1,11 +1,6 @@
 
-.label-container {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-border-width: 0;
-    -fx-padding: 0;
-    -fx-text-fill: black;
-    -fx-font-weight: bold;
+.label {
+
 }
 
 .button-selection-container {
@@ -16,14 +11,26 @@
 
 }
 
-.icon-button-container {
+.icon-button {
 
 }
 
-.textfield-container {
+.textfield {
 
 }
 
-.seperator-container{
+.seperator {
+
+}
+
+.input-container {
+
+}
+
+.output-container {
+
+}
+
+.label {
 
 }
