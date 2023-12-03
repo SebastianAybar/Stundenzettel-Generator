@@ -18,7 +18,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 
 
 
-public class StundenzettelController implements Initializable {
+public class StundenzettelController {
     @FXML private AnchorPane anchorPane;
     @FXML private Button excelList;
     @FXML private Button einzelerstellung;
@@ -37,12 +37,12 @@ public class StundenzettelController implements Initializable {
     @FXML private FontAwesomeIconView icnChooseInputFile;
 
 
-    @Override
-    public void initialize(URL location, ResourceBundle resourceBundle) {
+//    @Override
+//    public void initialize(URL location, ResourceBundle resourceBundle) {
 //        FontAwesomeIconView iconView = new FontAwesomeIconView(FontAwesomeIcon.STAR);
 //        iconView.setSize("12");
 //        btnChooseInputFile.setGraphic(iconView);
-    }
+//    }
 
     @FXML
     protected void chooseFile() {
