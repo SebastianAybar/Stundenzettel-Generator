@@ -26,7 +26,7 @@ public class StundenzettelController {
     @FXML private Label inputFile;
     @FXML private Label outputFile;
 
-    @FXML private TextField inputPathTextField;
+    @FXML private static TextField inputPathTextField;
     @FXML private TextField outputPathTextField;
     @FXML private CheckBox replaceFile;
     @FXML private Separator separator1;
@@ -57,6 +57,10 @@ public class StundenzettelController {
         if (selectedDirectory != null) {
             outputPathTextField.setText(selectedDirectory.getAbsolutePath());
         }
+    }
+
+    public static String getInputPath() {
+        return inputPathTextField.getText();
     }
 
 }
