@@ -24,7 +24,7 @@
                 <TextField fx:id="inputPathTextField" prefHeight="28.0" prefWidth="366.0" promptText="Hier können Sie den Pfad der Excel Liste eingeben." HBox.hgrow="ALWAYS" />
                 <Button fx:id="btnChooseInputFile" mnemonicParsing="false" onAction="#chooseFile" prefHeight="28.0">
                     <graphic>
-                        <FontAwesomeIconView />
+                        <FontAwesomeIconView glyphName="FOLDER" />
                     </graphic>
                 </Button>
             </children>
@@ -39,7 +39,11 @@
                 <HBox alignment="CENTER_LEFT" maxHeight="43.0" minHeight="43.0" prefHeight="43.0" spacing="10">
                     <Label alignment="TOP_LEFT" text="Ausgabeverzeichnis:" />
                     <TextField fx:id="outputPathTextField" prefHeight="28.0" promptText="Hier können Sie das Ausgabeverzeichnis eingeben." HBox.hgrow="ALWAYS" />
-                    <Button fx:id="btnChooseOutputFile" mnemonicParsing="false" onAction="#chooseDirectory" prefHeight="28.0" text="ICON" />
+                    <Button fx:id="btnChooseOutputFile" mnemonicParsing="false" onAction="#chooseDirectory" prefHeight="28.0">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="FOLDER" styleClass="icn-choose-inputfile" />
+                        </graphic>
+                    </Button>
                 </HBox>
                 <HBox alignment="TOP_RIGHT" prefHeight="17.0" prefWidth="525.0" VBox.vgrow="ALWAYS">
                     <CheckBox alignment="CENTER_RIGHT" mnemonicParsing="false" text="Datei ersetzen?" />

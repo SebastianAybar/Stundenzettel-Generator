@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import org.apache.poi.ss.usermodel.*;
 
 public class StundenzettelController {
     @FXML private AnchorPane anchorPane;
@@ -33,6 +34,9 @@ public class StundenzettelController {
     @FXML private Separator separator2;
     @FXML private Button calculate;
     @FXML private FontAwesomeIconView icnChooseInputFile;
+    @FXML private FontAwesomeIconView icnChooseOutputFile;
+    @FXML private String inputPath;
+
 
     @FXML
     protected void chooseFile() {
@@ -42,6 +46,7 @@ public class StundenzettelController {
 
         if (selectedFile != null) {
             inputPathTextField.setText(selectedFile.getAbsolutePath());
+//            inputPath = selectedFile.getAbsolutePath();
         }
     }
     @FXML

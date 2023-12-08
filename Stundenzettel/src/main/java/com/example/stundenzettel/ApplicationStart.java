@@ -17,6 +17,10 @@ public class ApplicationStart extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         String css = this.getClass().getResource("styles.css").toExternalForm();
         scene.getStylesheets().add(css);
+
+        Image image = new Image("/clock.png");
+        stage.getIcons().add(image);
+
         stage.setTitle("Stundenzettel Generator");
         stage.setScene(scene);
         stage.show();
