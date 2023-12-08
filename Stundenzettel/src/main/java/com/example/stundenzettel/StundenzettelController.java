@@ -15,7 +15,6 @@ import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import org.apache.poi.ss.usermodel.*;
 
 public class StundenzettelController {
     @FXML private AnchorPane anchorPane;
@@ -59,4 +58,5 @@ public class StundenzettelController {
             outputPathTextField.setText(selectedDirectory.getAbsolutePath());
         }
     }
+
 }

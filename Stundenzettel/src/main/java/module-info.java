@@ -8,6 +8,7 @@ module com.example.stundenzettel {
     requires net.synedra.validatorfx;
     requires de.jensd.fx.glyphs.fontawesome;
     requires org.apache.poi.poi;
+    requires org.apache.logging.log4j;
     //requires eu.hansolo.tilesfx;
     //requires com.almasb.fxgl.all;
     opens com.example.stundenzettel to javafx.fxml;
