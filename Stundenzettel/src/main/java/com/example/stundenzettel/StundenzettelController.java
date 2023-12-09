@@ -25,7 +25,6 @@ public class StundenzettelController {
     @FXML private Button btnChooseOutputFile;
     @FXML private Label inputFile;
     @FXML private Label outputFile;
-
     @FXML private static TextField inputPathTextField;
     @FXML private TextField outputPathTextField;
     @FXML private CheckBox replaceFile;
@@ -45,7 +44,6 @@ public class StundenzettelController {
 
         if (selectedFile != null) {
             inputPathTextField.setText(selectedFile.getAbsolutePath());
-//            inputPath = selectedFile.getAbsolutePath();
         }
     }
     @FXML

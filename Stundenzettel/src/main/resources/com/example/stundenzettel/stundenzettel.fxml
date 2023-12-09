@@ -15,7 +15,7 @@
         <HBox alignment="center" layoutX="56.0" layoutY="92.0" prefHeight="43.0" prefWidth="493.0" spacing="10" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="136.0">
             <children>
                 <Label alignment="CENTER_RIGHT" prefHeight="36.0" prefWidth="50.0" text="Datei:" />
-                <TextField fx:id="txtfld" prefHeight="28.0" prefWidth="366.0" promptText="Hier können Sie den Pfad der Excel-Liste eingeben." HBox.hgrow="ALWAYS" />
+                <TextField fx:id="inputPathTextField" prefHeight="28.0" prefWidth="366.0" promptText="Hier können Sie den Pfad der Excel-Liste eingeben." HBox.hgrow="ALWAYS" />
                 <Button fx:id="btnChooseInputFile" mnemonicParsing="false" onAction="#chooseFile" prefHeight="28.0">
                     <graphic>
                         <FontAwesomeIconView glyphName="FOLDER" />

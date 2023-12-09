@@ -5,13 +5,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class ExcelToJavaReader {
+public class AbstractExcelReader {
 
-    private static final String path = StundenzettelController.getInputPath();
+//    private static final String path = StundenzettelController.getInputPath();
     public static void main(String[] args) {
-        System.out.println(path);
-        // Pfad zur Excel-Datei
-        String excelFilePath = "C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\bsp.xlsx";
+//      System.out.println(path);
+//      Pfad zur Excel-Datei
+        String excelFilePath = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Side_Project_IFI\\Documents\\Mini-Job geringfügig Beschäftigte_01_10_2023_LV_Testnamen.xlsx";
 
         try (FileInputStream inputStream = new FileInputStream(new File(excelFilePath))) {
             // Öffne die Arbeitsmappe (Workbook)
