@@ -67,8 +67,8 @@ public class StundenzettelController {
             System.out.println();
         }
 
-        abstractExcelWriter = new AbstractExcelWriter(/*outputPathTextField.getText()*/);
-        abstractExcelWriter.writeToExcel(listsOfAbrechnungsmonate.get(0));
+//        abstractExcelWriter = new AbstractExcelWriter(/*outputPathTextField.getText()*/);
+//        abstractExcelWriter.writeToExcel(listsOfAbrechnungsmonate.get(0));
     }
 
 
