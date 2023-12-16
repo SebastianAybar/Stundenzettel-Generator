@@ -47,7 +47,7 @@
         <VBox alignment="CENTER_RIGHT" layoutX="72.0" layoutY="300.0" prefHeight="33.0" prefWidth="535.0" spacing="5" AnchorPane.bottomAnchor="82.0" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="78.0">
             <children>
                 <Separator prefHeight="20.0" prefWidth="446.0" />
-                <Button alignment="CENTER_RIGHT" contentDisplay="CENTER" mnemonicParsing="false" text="OK" />
+                <Button fx:id="btnOk" alignment="CENTER_RIGHT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#transformExcel" text="OK" />
             </children>
         </VBox>
     </children>
