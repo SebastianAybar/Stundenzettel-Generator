@@ -2,21 +2,19 @@ package com.example.stundenzettel;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Line;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+
 import java.io.File;
-import javafx.scene.image.*;
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import java.util.List;
+
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 
 public class StundenzettelController {
+    private AbstractExcelReader abstractExcelReader;
+    private AbstractExcelWriter abstractExcelWriter;
+
     @FXML private AnchorPane anchorPane;
     @FXML private Button excelList;
     @FXML private Button einzelerstellung;
@@ -25,7 +23,7 @@ public class StundenzettelController {
     @FXML private Button btnChooseOutputFile;
     @FXML private Label inputFile;
     @FXML private Label outputFile;
-    @FXML private static TextField inputPathTextField;
+    @FXML private TextField inputPathTextField;
     @FXML private TextField outputPathTextField;
     @FXML private CheckBox replaceFile;
     @FXML private Separator separator1;
@@ -34,7 +32,6 @@ public class StundenzettelController {
     @FXML private FontAwesomeIconView icnChooseInputFile;
     @FXML private FontAwesomeIconView icnChooseOutputFile;
     @FXML private String inputPath;
-
 
     @FXML
     protected void chooseFile() {
@@ -46,6 +43,7 @@ public class StundenzettelController {
             inputPathTextField.setText(selectedFile.getAbsolutePath());
         }
     }
+
     @FXML
     protected void chooseDirectory() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -57,8 +55,23 @@ public class StundenzettelController {
         }
     }
 
-    public static String getInputPath() {
-        return inputPathTextField.getText();
+    @FXML
+    protected void transformExcel() {
+        abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
+        List<List<MitarbeiterMonat>> listsOfAbrechnungsmonate = abstractExcelReader.getListsOfAbrechnungsmonate();
+
+        for (List<MitarbeiterMonat> monat : listsOfAbrechnungsmonate) {
+            for (MitarbeiterMonat m : monat) {
+                System.out.println(m.toString());
+            }
+            System.out.println();
+        }
+
+//        abstractExcelWriter = new AbstractExcelWriter(/*outputPathTextField.getText()*/);
+//        abstractExcelWriter.writeToExcel(listsOfAbrechnungsmonate.get(0));
     }
+
+
+
 
 }
