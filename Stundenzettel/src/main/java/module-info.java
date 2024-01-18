@@ -10,6 +10,8 @@ module com.example.stundenzettel {
     requires org.apache.poi.poi;
     requires org.apache.logging.log4j;
     requires org.apache.pdfbox;
+    requires de.focus_shift.jollyday.core;
+    requires de.focus_shift.jollyday.jaxb;
     //requires eu.hansolo.tilesfx;
     //requires com.almasb.fxgl.all;
     opens com.example.stundenzettel to javafx.fxml;

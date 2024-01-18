@@ -1,9 +1,8 @@
 package com.example.stundenzettel;
 
-public class MitarbeiterMonat {
+import org.apache.poi.ss.usermodel.Cell;
 
-    public MitarbeiterMonat() {
-    }
+public class MitarbeiterMonat {
 
     private String nr;
     private String berater;

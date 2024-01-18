@@ -7,14 +7,16 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 
+import static java.util.Collections.*;
+
 public class StundenzettelController {
     private AbstractExcelReader abstractExcelReader;
     private AbstractExcelWriter abstractExcelWriter;
-
     @FXML private AnchorPane anchorPane;
     @FXML private Button excelList;
     @FXML private Button einzelerstellung;
@@ -31,7 +33,6 @@ public class StundenzettelController {
     @FXML private Button calculate;
     @FXML private FontAwesomeIconView icnChooseInputFile;
     @FXML private FontAwesomeIconView icnChooseOutputFile;
-    @FXML private String inputPath;
 
     @FXML
     protected void chooseFile() {
@@ -58,20 +59,9 @@ public class StundenzettelController {
     @FXML
     protected void transformExcel() {
         abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
-        List<List<MitarbeiterMonat>> listsOfAbrechnungsmonate = abstractExcelReader.getListsOfAbrechnungsmonate();
+        List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate();
 
-        for (List<MitarbeiterMonat> monat : listsOfAbrechnungsmonate) {
-            for (MitarbeiterMonat m : monat) {
-                System.out.println(m.toString());
-            }
-            System.out.println();
-        }
-
-//        abstractExcelWriter = new AbstractExcelWriter(/*outputPathTextField.getText()*/);
-//        abstractExcelWriter.writeToExcel(listsOfAbrechnungsmonate.get(0));
+        abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
+        abstractExcelWriter.writeToExcel(jahresliste);
     }
-
-
-
-
 }
