@@ -34,23 +34,24 @@ public class AbstractExcelWriter {
                 for (MitarbeiterMonat mitarbeiterMonat : monatsliste) {
                     String[] datum = mitarbeiterMonat.getAbrechnungsmonat().split("/");
                     List<LocalDate> datenDesMonats = getDatenDesMonats(datum);
-                    System.out.println(datenDesMonats);
+                    List<Cell> werktag = new ArrayList<>();
+                    //System.out.println(datenDesMonats);
                     int counterTage = 0;
                     for (Row row : sheet) {
                         for (Cell cell : row) {
                             if (cell.getCellType() == CellType.STRING) {
                                 String cellValue = cell.getStringCellValue().trim();
-                                if (cell.getStringCellValue().equals("<<Abrechnungsmonat>>")) {
+                                if (cellValue.equals("<<Abrechnungsmonat>>")) {
                                     cell.setCellValue(mitarbeiterMonat.getAbrechnungsmonat());
                                 }
-                                if (cell.getStringCellValue().equals("<<Mitarbeiter>>")) {
+                                if (cellValue.equals("<<Mitarbeiter>>")) {
                                     cell.setCellValue(mitarbeiterMonat.getNachnameVorname());
                                 }
-                                if (cell.getStringCellValue().equals("<<Mitarbeiternummer>>")) {
+                                if (cellValue.equals("<<Mitarbeiternummer>>")) {
                                     cell.setCellValue(mitarbeiterMonat.getMitarbeiternummer());
                                 }
 
-                                if (cell.getStringCellValue().startsWith("<<Tag")) {
+                                if (cellValue.startsWith("<<Tag")) {
                                     if (counterTage < datenDesMonats.size()) {
                                         cell.setCellValue(datenDesMonats.get(counterTage));
 
@@ -62,15 +63,18 @@ public class AbstractExcelWriter {
                                         if (wochentag.equals("Sonntag") || isDatumEinFeiertag(datenDesMonats.get(counterTage), Integer.parseInt(datum[0]))) {
                                             markiereRowAlsFreienTag(workbook, row, cell);
                                         }
-
-
-                                        System.out.println(cell.getNumericCellValue());
                                         counterTage++;
                                     }
+                                }
+                                if (cellValue.startsWith("<<Std")) {
+                                    werktag.add(cell);
                                 }
                             }
                         }
                     }
+                    //System.out.println(werktag);
+                    double svBrutto = Double.parseDouble(mitarbeiterMonat.getSvBrutto());
+
                     // Excel Formeln werden nach dem Füllen der Felder noch einmal ausgeführt (z.B. für KW)
                     FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
                     evaluator.evaluateAll();
