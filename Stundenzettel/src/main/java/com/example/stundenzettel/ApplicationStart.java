@@ -15,8 +15,8 @@ public class ApplicationStart extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ApplicationStart.class.getResource("stundenzettel.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        String css = this.getClass().getResource("styles.css").toExternalForm();
-        scene.getStylesheets().add(css);
+        //String css = this.getClass().getResource("styles.css").toExternalForm();
+        //scene.getStylesheets().add(css);
 
         Image image = new Image("/clock.png");
         stage.getIcons().add(image);

@@ -23,7 +23,9 @@ public class AbstractExcelWriter {
     private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
     private final String outputPath;
 
-    AbstractExcelWriter(String outputPath) { this.outputPath = outputPath; }
+    AbstractExcelWriter(String outputPath) {
+        this.outputPath = outputPath;
+    }
 
     public void writeToExcel(List<List<MitarbeiterMonat>> jahresliste) {
         for (List<MitarbeiterMonat> monatsliste : jahresliste) {
@@ -32,6 +34,7 @@ public class AbstractExcelWriter {
                 Workbook workbook = WorkbookFactory.create(inputStream);
                 Sheet sheet = workbook.getSheetAt(0);
                 for (MitarbeiterMonat mitarbeiterMonat : monatsliste) {
+                    workbook.cloneSheet(0);
                     String[] datum = mitarbeiterMonat.getAbrechnungsmonat().split("/");
                     List<LocalDate> datenDesMonats = getDatenDesMonats(datum);
                     List<Cell> werktag = new ArrayList<>();
@@ -74,10 +77,13 @@ public class AbstractExcelWriter {
                     }
                     //System.out.println(werktag);
                     double svBrutto = Double.parseDouble(mitarbeiterMonat.getSvBrutto());
+                    double stundenlohn = 12;
+                    double stundensatz = svBrutto / stundenlohn;
+                    System.out.println(stundensatz);
 
                     // Excel Formeln werden nach dem Füllen der Felder noch einmal ausgeführt (z.B. für KW)
-                    FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
-                    evaluator.evaluateAll();
+                    //FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+                    //evaluator.evaluateAll();
                 }
                 try (FileOutputStream fileOutputStream = new FileOutputStream(outputPath + "\\test.xlsx")) {
                     workbook.write(fileOutputStream);
