@@ -4,15 +4,15 @@ import de.focus_shift.jollyday.core.Holiday;
 import de.focus_shift.jollyday.core.HolidayManager;
 import de.focus_shift.jollyday.core.ManagerParameters;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.commons.math3.distribution.NormalDistribution;
 
+import javax.xml.transform.Source;
 import java.io.*;
+import java.security.spec.RSAOtherPrimeInfo;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.Set;
 
 import static java.util.Locale.GERMANY;
 
@@ -33,25 +33,25 @@ public class AbstractExcelWriter {
                 InputStream inputStream = new FileInputStream(pathTemplate);
                 Workbook workbook = WorkbookFactory.create(inputStream);
                 Sheet sheet = workbook.getSheetAt(0);
-                for (MitarbeiterMonat mitarbeiterMonat : monatsliste) {
+                for (int i = 0; i < monatsliste.size(); i++) {
                     workbook.cloneSheet(0);
-                    String[] datum = mitarbeiterMonat.getAbrechnungsmonat().split("/");
+                    String[] datum = monatsliste.get(i).getAbrechnungsmonat().split("/");
                     List<LocalDate> datenDesMonats = getDatenDesMonats(datum);
-                    List<Cell> werktag = new ArrayList<>();
+                    List<Cell> arbeitszeitenCells = new ArrayList<>();
                     //System.out.println(datenDesMonats);
                     int counterTage = 0;
-                    for (Row row : sheet) {
+                    for (Row row : workbook.getSheetAt(i + 1)) {
                         for (Cell cell : row) {
                             if (cell.getCellType() == CellType.STRING) {
                                 String cellValue = cell.getStringCellValue().trim();
                                 if (cellValue.equals("<<Abrechnungsmonat>>")) {
-                                    cell.setCellValue(mitarbeiterMonat.getAbrechnungsmonat());
+                                    cell.setCellValue(monatsliste.get(i).getAbrechnungsmonat());
                                 }
                                 if (cellValue.equals("<<Mitarbeiter>>")) {
-                                    cell.setCellValue(mitarbeiterMonat.getNachnameVorname());
+                                    cell.setCellValue(monatsliste.get(i).getNachnameVorname());
                                 }
                                 if (cellValue.equals("<<Mitarbeiternummer>>")) {
-                                    cell.setCellValue(mitarbeiterMonat.getMitarbeiternummer());
+                                    cell.setCellValue(monatsliste.get(i).getMitarbeiternummer());
                                 }
 
                                 if (cellValue.startsWith("<<Tag")) {
@@ -70,20 +70,58 @@ public class AbstractExcelWriter {
                                     }
                                 }
                                 if (cellValue.startsWith("<<Std")) {
-                                    werktag.add(cell);
+                                    arbeitszeitenCells.add(cell);
                                 }
                             }
                         }
                     }
-                    //System.out.println(werktag);
-                    double svBrutto = Double.parseDouble(mitarbeiterMonat.getSvBrutto());
+
+                    // Stundensatz berechnen
+                    double svBrutto = Double.parseDouble(monatsliste.get(i).getSvBrutto());
                     double stundenlohn = 12;
                     double stundensatz = svBrutto / stundenlohn;
-                    System.out.println(stundensatz);
+                    double arbeitstage = stundensatz / 2.5;
+                    int gerundeteArbeitstage = (int) Math.round(arbeitstage);
+
+                    double[] arrayArbeitstage = generateRandomNumbers(gerundeteArbeitstage, 2.5, 1);
+
+                    double sum = 0;
+                    for (double value : arrayArbeitstage) {
+                        sum += value;
+                    }
+                    //System.out.println(sum);
+
+                    for (int j = 0; j < arrayArbeitstage.length; j++) {
+                        arrayArbeitstage[j] = arrayArbeitstage[j] * (stundensatz / sum);
+                    }
+
+                    double sumAfter = 0;
+                    for (double value : arrayArbeitstage) {
+                        sumAfter += value;
+                    }
+                    System.out.println(sumAfter);
+
+                    for (double value : arrayArbeitstage) {
+                        System.out.println(value);
+                    }
+                    System.out.println("_______________________________________________________________________________________________________________");
+
+                    /*
+                    int anzahlPotentielleArbeitstage = arbeitszeitenCells.size();
+                    double[] arrArbeitszeitenCells = new double[anzahlPotentielleArbeitstage];
+                    int[] zufallsIndizes = generateRandomIndices(anzahlPotentielleArbeitstage, gerundeteArbeitstage);
+                    for (int k : zufallsIndizes) {
+                        arrArbeitszeitenCells[k] = arrayArbeitstage[k];
+                    }
+                    for (double value : arrArbeitszeitenCells) {
+                        System.out.println(value);
+                    }
+                    */
 
                     // Excel Formeln werden nach dem Füllen der Felder noch einmal ausgeführt (z.B. für KW)
                     //FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
                     //evaluator.evaluateAll();
+
                 }
                 try (FileOutputStream fileOutputStream = new FileOutputStream(outputPath + "\\test.xlsx")) {
                     workbook.write(fileOutputStream);
@@ -93,6 +131,29 @@ public class AbstractExcelWriter {
             }
         }
     }
+
+    private double[] generateRandomNumbers(int numArbeitstage, double mean, double sd) {
+        double[] result = new double[numArbeitstage];
+        NormalDistribution normalDistribution = new NormalDistribution(mean, sd);
+
+        for (int i = 0; i < numArbeitstage; i++) {
+            double randomValue = Math.max(normalDistribution.sample(), 0);
+            result[i] = randomValue;
+        }
+        return result;
+    }
+
+    private static int[] generateRandomIndices(int arraySize, int numIndices) {
+        int[] indices = new int[numIndices];
+        Random random = new Random();
+
+        for (int i = 0; i < numIndices; i++) {
+            indices[i] = random.nextInt(arraySize);
+        }
+        return indices;
+    }
+
+
 
     // Gibt eine Liste mit allen Tagen des bestimmten Monats zurück
     private List<LocalDate> getDatenDesMonats(String[] datum) {
@@ -104,7 +165,6 @@ public class AbstractExcelWriter {
             LocalDate aktuellesDatum = ersterTag.plusDays(j);
             datenDesMonats.add(aktuellesDatum);
         }
-
         return datenDesMonats;
     }
 

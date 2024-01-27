@@ -33,8 +33,8 @@ public class AbstractExcelReader {
             }
         }
         jahresliste.add(monatsliste);
-        printJahresliste(jahresliste);
-        System.out.println();
+        //printJahresliste(jahresliste);
+        //System.out.println();
         return jahresliste;
     }
 

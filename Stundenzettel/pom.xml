@@ -16,6 +16,11 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version> <!-- oder die neueste Version -->
+        </dependency>
         <!-- https://mvnrepository.com/artifact/de.focus-shift/jollyday-core -->
         <dependency>
             <groupId>de.focus-shift</groupId>

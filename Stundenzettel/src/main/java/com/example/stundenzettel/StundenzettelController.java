@@ -17,6 +17,11 @@ import static java.util.Collections.*;
 public class StundenzettelController {
     private AbstractExcelReader abstractExcelReader;
     private AbstractExcelWriter abstractExcelWriter;
+
+    @FXML
+    private Label lblStundenlohn;
+    @FXML
+    private TextField textFieldStundenlohn;
     @FXML private AnchorPane anchorPane;
     @FXML private Button excelList;
     @FXML private Button einzelerstellung;
@@ -58,6 +63,9 @@ public class StundenzettelController {
 
     @FXML
     protected void transformExcel() {
+        inputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents\\Mini-Job geringfügig Beschäftigte_01_10_2023_LV_Testnamen.xlsx");
+        outputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents");
+
         abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
         List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate();
 

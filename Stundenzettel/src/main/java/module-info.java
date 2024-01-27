@@ -12,8 +12,9 @@ module com.example.stundenzettel {
     requires org.apache.pdfbox;
     requires de.focus_shift.jollyday.core;
     requires de.focus_shift.jollyday.jaxb;
-    //requires eu.hansolo.tilesfx;
-    //requires com.almasb.fxgl.all;
+    requires org.apache.commons.io;
+    requires org.apache.commons.compress;
+    requires commons.math3;
     opens com.example.stundenzettel to javafx.fxml;
     exports com.example.stundenzettel;
 }

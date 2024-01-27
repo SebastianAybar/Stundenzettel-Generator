@@ -6,3 +6,11 @@
     -fx-border-radius: 3px;
     -fx-border-color: rgb(53,53, 53);
 }*/
+
+/*.hbox-header {
+    -fx-spacing: 100;
+}*/
+
+.hbox-hbox-header {
+    -fx-spacing: 5;
+}
