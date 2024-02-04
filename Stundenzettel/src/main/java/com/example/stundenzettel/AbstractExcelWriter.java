@@ -24,7 +24,8 @@ import static java.util.Locale.GERMANY;
 public class AbstractExcelWriter {
 
     private final String BUNDESLAND = "he";
-    private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
+//    private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
+    private final String pathTemplate = "E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
     private final String outputPath;
 
     AbstractExcelWriter(String outputPath) {
@@ -71,6 +72,12 @@ public class AbstractExcelWriter {
                                             markiereRowAlsFreienTag(workbook, row, cell);
                                         }
                                         counterTage++;
+                                    } else {
+                                        Row ueberfluessigerTag = cell.getRow();
+                                        int rowNum = ueberfluessigerTag.getRowNum();
+                                        workbook.getSheetAt(i + 1).removeRow(ueberfluessigerTag);
+                                        workbook.getSheetAt(i + 1).shiftRows(rowNum + 1, workbook.getSheetAt(i + 1).getLastRowNum(), -1);
+                                        continue;
                                     }
                                 }
                                 /*if (cellValue.equals("Montag")) {
@@ -79,12 +86,12 @@ public class AbstractExcelWriter {
                                 if (cellValue.startsWith("<<Std")) {
                                     arbeitszeitenCells.add(cell);
                                 }
-//                                if (cellValue.startsWith("<<Auf")) {
-//                                    LocalDate aufgezeichnetAm = cell.getRow().getCell(cell.getColumnIndex()-4).getLocalDateTimeCellValue().toLocalDate()
-//                                            .with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-//                                    System.out.println("Nächster Montag: " + aufgezeichnetAm);
-//
-//                                }
+                                if (cellValue.startsWith("<<Auf")) {
+                                    LocalDate aufgezeichnetAm = cell.getRow().getCell(cell.getColumnIndex()-4).getLocalDateTimeCellValue().toLocalDate()
+                                            .with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+                                    System.out.println("Nächster Montag: " + aufgezeichnetAm);
+
+                                }
                             }
                         }
                         //System.out.println(aktuellerMontag);
