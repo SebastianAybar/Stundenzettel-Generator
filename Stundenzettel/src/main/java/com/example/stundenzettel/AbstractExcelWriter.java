@@ -3,6 +3,7 @@ package com.example.stundenzettel;
 import de.focus_shift.jollyday.core.Holiday;
 import de.focus_shift.jollyday.core.HolidayManager;
 import de.focus_shift.jollyday.core.ManagerParameters;
+import org.apache.poi.ss.formula.functions.Na;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
@@ -24,8 +25,8 @@ import static java.util.Locale.GERMANY;
 public class AbstractExcelWriter {
 
     private final String BUNDESLAND = "he";
-//    private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
-    private final String pathTemplate = "E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
+    private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
+    //private final String pathTemplate = "E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
     private final String outputPath;
 
     AbstractExcelWriter(String outputPath) {
@@ -38,14 +39,16 @@ public class AbstractExcelWriter {
             try {
                 InputStream inputStream = new FileInputStream(pathTemplate);
                 Workbook workbook = WorkbookFactory.create(inputStream);
-                Sheet sheet = workbook.getSheetAt(0);
+                Sheet currentSheet = workbook.getSheetAt(0);
                 for (int i = 0; i < monatsliste.size(); i++) {
                     workbook.cloneSheet(0);
+                    currentSheet = workbook.getSheetAt(i+1);
                     String[] datum = monatsliste.get(i).getAbrechnungsmonat().split("/");
                     List<LocalDate> datenDesMonats = getDatenDesMonats(datum);
                     List<Cell> arbeitszeitenCells = new ArrayList<>();
                     int counterTage = 0;
-                    for (Row row : workbook.getSheetAt(i + 1)) {
+                    List<Row> rowsToRemove = new ArrayList<>();
+                    for (Row row : currentSheet) {
                         //String aktuellerMontag = "";
                         for (Cell cell : row) {
                             if (cell.getCellType() == CellType.STRING) {
@@ -73,11 +76,12 @@ public class AbstractExcelWriter {
                                         }
                                         counterTage++;
                                     } else {
-                                        Row ueberfluessigerTag = cell.getRow();
-                                        int rowNum = ueberfluessigerTag.getRowNum();
-                                        workbook.getSheetAt(i + 1).removeRow(ueberfluessigerTag);
-                                        workbook.getSheetAt(i + 1).shiftRows(rowNum + 1, workbook.getSheetAt(i + 1).getLastRowNum(), -1);
-                                        continue;
+//                                        Row ueberfluessigerTag = cell.getRow();
+//                                        int rowNum = ueberfluessigerTag.getRowNum();
+//                                        System.out.println(rowNum);
+//                                        workbook.getSheetAt(i + 1).removeRow(ueberfluessigerTag);
+                                        rowsToRemove.add(cell.getRow());
+                                        break;
                                     }
                                 }
                                 /*if (cellValue.equals("Montag")) {
@@ -86,15 +90,19 @@ public class AbstractExcelWriter {
                                 if (cellValue.startsWith("<<Std")) {
                                     arbeitszeitenCells.add(cell);
                                 }
-                                if (cellValue.startsWith("<<Auf")) {
-                                    LocalDate aufgezeichnetAm = cell.getRow().getCell(cell.getColumnIndex()-4).getLocalDateTimeCellValue().toLocalDate()
-                                            .with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-                                    System.out.println("Nächster Montag: " + aufgezeichnetAm);
-
-                                }
                             }
                         }
+
+//                        if (rowRemoved) {
+//                            workbook.getSheetAt(i + 1).shiftRows(removedRowNum + 1, workbook.getSheetAt(i + 1).getLastRowNum(), -1);
+//
+//                        }
+
                         //System.out.println(aktuellerMontag);
+                    }//System.out.println("________________________________________________");
+
+                    for (Row row : rowsToRemove) {
+                        currentSheet.removeRow(row);
                     }
 
                     //Wir erstellen ein Array mit den normalverteilten Arbeitszeiten
@@ -145,6 +153,13 @@ public class AbstractExcelWriter {
                             arbeitszeitenCells.get(k).setCellValue(arrArbeitszeitenCells[k]);
                             arbeitszeitenCells.get(k).getRow().getCell(arbeitszeitenCells.get(k).getColumnIndex() + 1).setCellValue(arrArbeitszeitenCells[k]);
 
+                            LocalDate aufgezeichnetAm = arbeitszeitenCells.get(k).getRow().getCell(arbeitszeitenCells.get(k).getColumnIndex() - 2).getLocalDateTimeCellValue().toLocalDate().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+
+                            if (isDatumEinFeiertag(aufgezeichnetAm, Integer.parseInt(datum[0]))) {
+                                aufgezeichnetAm = aufgezeichnetAm.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+                            }
+                            arbeitszeitenCells.get(k).getRow().getCell(arbeitszeitenCells.get(k).getColumnIndex() + 2).setCellValue(aufgezeichnetAm);
+
                             String temp = arrArbeitszeitenCells[k].replace(",", ".");
                             insgMinuten = (int) (Double.parseDouble(temp) * 60);
                             stunden = (int) Double.parseDouble(temp);
@@ -158,6 +173,7 @@ public class AbstractExcelWriter {
                         } else {
                             arbeitszeitenCells.get(k).setCellValue("");
                             arbeitszeitenCells.get(k).getRow().getCell(arbeitszeitenCells.get(k).getColumnIndex() - 1).setCellValue("");
+                            arbeitszeitenCells.get(k).getRow().getCell(arbeitszeitenCells.get(k).getColumnIndex() + 2).setCellValue("");
                         }
                     }
 

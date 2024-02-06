@@ -14,3 +14,7 @@
 .hbox-hbox-header {
     -fx-spacing: 5;
 }
+
+.hbox-einzelerstellung {
+    -fx-spacing: 15;
+}

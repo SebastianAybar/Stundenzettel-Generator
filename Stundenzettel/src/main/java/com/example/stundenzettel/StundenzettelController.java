@@ -3,6 +3,7 @@ package com.example.stundenzettel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
@@ -22,22 +23,42 @@ public class StundenzettelController {
     private Label lblStundenlohn;
     @FXML
     private TextField textFieldStundenlohn;
-    @FXML private AnchorPane anchorPane;
-    @FXML private Button excelList;
-    @FXML private Button einzelerstellung;
+    @FXML
+    private AnchorPane anchorPane;
+    @FXML
+    private Button excelList;
+    @FXML
+    private Button einzelerstellung;
 
-    @FXML private Button btnChooseInputFile;
-    @FXML private Button btnChooseOutputFile;
-    @FXML private Label inputFile;
-    @FXML private Label outputFile;
-    @FXML private TextField inputPathTextField;
-    @FXML private TextField outputPathTextField;
-    @FXML private CheckBox replaceFile;
-    @FXML private Separator separator1;
-    @FXML private Separator separator2;
-    @FXML private Button calculate;
-    @FXML private FontAwesomeIconView icnChooseInputFile;
-    @FXML private FontAwesomeIconView icnChooseOutputFile;
+    @FXML
+    private Button btnChooseInputFile;
+    @FXML
+    private Button btnChooseOutputFile;
+    @FXML
+    private Label inputFile;
+    @FXML
+    private Label outputFile;
+    @FXML
+    private TextField inputPathTextField;
+    @FXML
+    private TextField outputPathTextField;
+    @FXML
+    private CheckBox replaceFile;
+    @FXML
+    private Separator separator1;
+    @FXML
+    private Separator separator2;
+    @FXML
+    private Button calculate;
+    @FXML
+    private FontAwesomeIconView icnChooseInputFile;
+    @FXML
+    private FontAwesomeIconView icnChooseOutputFile;
+    @FXML
+    private HBox hboxExcelListeAnsicht;
+    @FXML
+    private HBox hboxEinzelerstellung;
+
 
     @FXML
     protected void chooseFile() {
@@ -72,4 +93,17 @@ public class StundenzettelController {
         abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
         abstractExcelWriter.writeToExcel(jahresliste);
     }
+
+    @FXML
+    protected void einzerstellung() {
+        hboxExcelListeAnsicht.setVisible(false);
+        hboxEinzelerstellung.setVisible(true);
+    }
+
+    @FXML
+    protected void excelList() {
+        hboxExcelListeAnsicht.setVisible(true);
+        hboxEinzelerstellung.setVisible(false);
+    }
 }
+

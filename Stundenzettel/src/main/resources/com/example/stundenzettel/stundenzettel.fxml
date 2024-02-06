@@ -12,11 +12,11 @@
             <children>
             <HBox alignment="CENTER_LEFT" prefHeight="36.0" prefWidth="281.0" styleClass="hbox-hbox-header">
                <children>
-                      <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Excel Liste">
+                      <Button mnemonicParsing="false" onAction="#excelList" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Excel Liste">
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font></Button>
-                      <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Einzelerstellung">
+                      <Button mnemonicParsing="false" onAction="#einzerstellung" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Einzelerstellung">
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font></Button>
@@ -36,7 +36,7 @@
             </HBox>
             </children>
         </HBox>
-        <HBox alignment="center" layoutX="56.0" layoutY="92.0" prefHeight="43.0" prefWidth="493.0" spacing="10" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="136.0">
+        <HBox fx:id="hboxExcelListeAnsicht" alignment="center" layoutX="56.0" layoutY="92.0" prefHeight="43.0" prefWidth="493.0" spacing="10" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="136.0">
             <children>
                 <Label alignment="CENTER_RIGHT" prefHeight="36.0" prefWidth="50.0" text="Datei:">
                <font>
@@ -50,6 +50,53 @@
                 </Button>
             </children>
         </HBox>
+      <HBox HBox.hgrow="ALWAYS" fx:id="hboxEinzelerstellung" alignment="CENTER_LEFT" layoutX="59.0" layoutY="75.0" prefHeight="60.0" prefWidth="493.0" styleClass="hbox-einzelerstellung" visible="false" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="136.0">
+         <children>
+            <VBox alignment="CENTER" prefHeight="60.0" prefWidth="308.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="67.0" prefWidth="314.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="119.0" text="Abrechnungsmonat: ">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font></Label>
+                        <Spinner prefHeight="25.0" prefWidth="139.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="59.0" prefWidth="186.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="120.0" text="Mitarbeiternummer: ">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font></Label>
+                        <TextField prefHeight="25.0" prefWidth="135.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox prefHeight="60.0" prefWidth="241.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="61.0" prefWidth="183.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="63.0" text="SV-Brutto: " textAlignment="RIGHT">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font></Label>
+                        <TextField prefHeight="25.0" prefWidth="123.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="59.0" prefWidth="183.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="42.0" text="Name: ">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font></Label>
+                        <TextField prefHeight="25.0" prefWidth="144.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children></HBox>
         <HBox alignment="CENTER_RIGHT" layoutX="72.0" layoutY="160.0" prefHeight="25.0" prefWidth="535.0" AnchorPane.leftAnchor="64.0" AnchorPane.rightAnchor="136.0">
             <children>
                 <Separator prefHeight="20.0" HBox.hgrow="ALWAYS" />
