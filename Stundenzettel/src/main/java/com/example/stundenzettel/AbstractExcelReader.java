@@ -45,29 +45,30 @@ public class AbstractExcelReader {
 
             listMitarbeiterMonat = new ArrayList<>();
 
+
             for (Row row : sheet) {
                 MitarbeiterMonat mitarbeiterMonat = new MitarbeiterMonat();
-                mitarbeiterMonat.setNr(getCellAsString(row.getCell(0)));
+                /*mitarbeiterMonat.setNr(getCellAsString(row.getCell(0)));
                 mitarbeiterMonat.setBerater(getCellAsString(row.getCell(1)));
-                mitarbeiterMonat.setMandant(getCellAsString(row.getCell(2)));
+                mitarbeiterMonat.setMandant(getCellAsString(row.getCell(2)));*/
                 mitarbeiterMonat.setAbrechnungsmonat(getCellAsString(row.getCell(3)));
                 mitarbeiterMonat.setMitarbeiternummer(getCellAsString(row.getCell(4)));
                 mitarbeiterMonat.setNachnameVorname(getCellAsString(row.getCell(5)));
-                mitarbeiterMonat.setPgr(getCellAsString(row.getCell(6)));
+                /*mitarbeiterMonat.setPgr(getCellAsString(row.getCell(6)));
                 mitarbeiterMonat.setStkl(getCellAsString(row.getCell(7)));
                 mitarbeiterMonat.setAntyp(getCellAsString(row.getCell(8)));
                 mitarbeiterMonat.setBschluesselKv(getCellAsString(row.getCell(9)));
                 mitarbeiterMonat.setBschluesselRv(getCellAsString(row.getCell(10)));
                 mitarbeiterMonat.setBschluesselAv(getCellAsString(row.getCell(11)));
-                mitarbeiterMonat.setBschluesselPv(getCellAsString(row.getCell(12)));
+                mitarbeiterMonat.setBschluesselPv(getCellAsString(row.getCell(12)));*/
                 mitarbeiterMonat.setSvBrutto(getCellAsString(row.getCell(13)));
-                mitarbeiterMonat.setNameBetrieb(getCellAsString(row.getCell(14)));
+                /*mitarbeiterMonat.setNameBetrieb(getCellAsString(row.getCell(14)));
                 mitarbeiterMonat.setStrassePostfach(getCellAsString(row.getCell(15)));
                 mitarbeiterMonat.setPlz(getCellAsString(row.getCell(16)));
                 mitarbeiterMonat.setOrt(getCellAsString(row.getCell(17)));
                 mitarbeiterMonat.setSvTage(getCellAsString(row.getCell(18)));
                 mitarbeiterMonat.setNatKennzeichen(getCellAsString(row.getCell(19)));
-                mitarbeiterMonat.setMidijobregelung(getCellAsString(row.getCell(20)));
+                mitarbeiterMonat.setMidijobregelung(getCellAsString(row.getCell(20)));*/
                 listMitarbeiterMonat.add(mitarbeiterMonat);
             }
 

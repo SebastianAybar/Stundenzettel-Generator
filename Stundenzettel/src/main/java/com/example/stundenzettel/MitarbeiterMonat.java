@@ -4,12 +4,13 @@ import org.apache.poi.ss.usermodel.Cell;
 
 public class MitarbeiterMonat {
 
-    private String nr;
-    private String berater;
-    private String mandant;
+    private String svBrutto;
     private String abrechnungsmonat;
     private String mitarbeiternummer;
     private String nachnameVorname;
+    /*private String nr;
+    private String berater;
+    private String mandant;
     private String pgr;
     private String stkl;
     private String antyp;
@@ -17,17 +18,40 @@ public class MitarbeiterMonat {
     private String bschluesselRv;
     private String bschluesselAv;
     private String bschluesselPv;
-    private String svBrutto;
     private String nameBetrieb;
     private String strassePostfach;
     private String plz;
     private String ort;
     private String svTage;
     private String natKennzeichen;
-    private String midijobregelung;
+    private String midijobregelung;*/
 
+    public String getAbrechnungsmonat() {
+        return abrechnungsmonat;
+    }
+    public void setAbrechnungsmonat(String abrechnungsmonat) {
+        this.abrechnungsmonat = abrechnungsmonat;
+    }
+    public String getMitarbeiternummer() {
+        return mitarbeiternummer;
+    }
+    public void setMitarbeiternummer(String mitarbeiternummer) {
+        this.mitarbeiternummer = mitarbeiternummer;
+    }
+    public String getNachnameVorname() {
+        return nachnameVorname;
+    }
+    public void setNachnameVorname(String nachnameVorname) {
+        this.nachnameVorname = nachnameVorname;
+    }
+    public String getSvBrutto() {
+        return svBrutto;
+    }
+    public void setSvBrutto(String svBrutto) {
+        this.svBrutto = svBrutto;
+    }
 
-    public String getNr() {
+    /*public String getNr() {
         return nr;
     }
 
@@ -49,30 +73,6 @@ public class MitarbeiterMonat {
 
     public void setMandant(String mandant) {
         this.mandant = mandant;
-    }
-
-    public String getAbrechnungsmonat() {
-        return abrechnungsmonat;
-    }
-
-    public void setAbrechnungsmonat(String abrechnungsmonat) {
-        this.abrechnungsmonat = abrechnungsmonat;
-    }
-
-    public String getMitarbeiternummer() {
-        return mitarbeiternummer;
-    }
-
-    public void setMitarbeiternummer(String mitarbeiternummer) {
-        this.mitarbeiternummer = mitarbeiternummer;
-    }
-
-    public String getNachnameVorname() {
-        return nachnameVorname;
-    }
-
-    public void setNachnameVorname(String nachnameVorname) {
-        this.nachnameVorname = nachnameVorname;
     }
 
     public String getPgr() {
@@ -131,14 +131,6 @@ public class MitarbeiterMonat {
         this.bschluesselPv = bschluesselPv;
     }
 
-    public String getSvBrutto() {
-        return svBrutto;
-    }
-
-    public void setSvBrutto(String svBrutto) {
-        this.svBrutto = svBrutto;
-    }
-
     public String getNameBetrieb() {
         return nameBetrieb;
     }
@@ -193,32 +185,32 @@ public class MitarbeiterMonat {
 
     public void setMidijobregelung(String midijobregelung) {
         this.midijobregelung = midijobregelung;
-    }
+    }*/
 
     @Override
     public String toString() {
         return "MitarbeiterMonat{" +
-                "nr='" + nr + '\'' +
+                /*"nr='" + nr + '\'' +
                 ", berater='" + berater + '\'' +
-                ", mandant='" + mandant + '\'' +
+                ", mandant='" + mandant + '\'' +*/
                 ", abrechnungsmonat='" + abrechnungsmonat + '\'' +
                 ", mitarbeiternummer='" + mitarbeiternummer + '\'' +
                 ", nachnameVorname='" + nachnameVorname + '\'' +
-                ", pgr='" + pgr + '\'' +
+                /*", pgr='" + pgr + '\'' +
                 ", stkl='" + stkl + '\'' +
                 ", antyp='" + antyp + '\'' +
                 ", bschluesselKv='" + bschluesselKv + '\'' +
                 ", bschluesselRv='" + bschluesselRv + '\'' +
                 ", bschluesselAv='" + bschluesselAv + '\'' +
-                ", bschluesselPv='" + bschluesselPv + '\'' +
+                ", bschluesselPv='" + bschluesselPv + '\'' +*/
                 ", svBrutto='" + svBrutto + '\'' +
-                ", nameBetrieb='" + nameBetrieb + '\'' +
+                /*", nameBetrieb='" + nameBetrieb + '\'' +
                 ", strassePostfach='" + strassePostfach + '\'' +
                 ", plz='" + plz + '\'' +
                 ", ort='" + ort + '\'' +
                 ", svTage='" + svTage + '\'' +
                 ", natKennzeichen='" + natKennzeichen + '\'' +
-                ", midijobregelung='" + midijobregelung + '\'' +
+                ", midijobregelung='" + midijobregelung + '\'' +*/
                 '}';
     }
 }

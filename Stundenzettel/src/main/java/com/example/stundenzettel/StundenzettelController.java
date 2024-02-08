@@ -16,8 +16,11 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import static java.util.Collections.*;
 
 public class StundenzettelController {
+
     private AbstractExcelReader abstractExcelReader;
     private AbstractExcelWriter abstractExcelWriter;
+    private boolean isExcelListeClicked = true;
+    private boolean isEinzelerstellungClicked = false;
 
     @FXML
     private Label lblStundenlohn;
@@ -29,7 +32,6 @@ public class StundenzettelController {
     private Button excelList;
     @FXML
     private Button einzelerstellung;
-
     @FXML
     private Button btnChooseInputFile;
     @FXML
@@ -87,23 +89,39 @@ public class StundenzettelController {
         inputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents\\Mini-Job geringfügig Beschäftigte_01_10_2023_LV_Testnamen.xlsx");
         outputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents");
 
-        abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
-        List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate();
-
-        abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
-        abstractExcelWriter.writeToExcel(jahresliste);
+        if (isExcelListeClicked) {
+            System.out.println("Methode für Excel-Liste ausgeführt!");
+            abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
+            List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate();
+            abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
+            abstractExcelWriter.writeToExcel(jahresliste);
+        } else if (isEinzelerstellungClicked) {
+            System.out.println("Methode für Einzelerstellung ausgeführt!");
+            // Klasse erstellen für Einzelerstellung (mit allen relevanten Variablen und Methoden)
+            // hier ausführen
+        }
     }
 
     @FXML
     protected void einzerstellung() {
         hboxExcelListeAnsicht.setVisible(false);
         hboxEinzelerstellung.setVisible(true);
+
+        isEinzelerstellungClicked = true;
+        isExcelListeClicked = false;
+        System.out.println("Einzelerstellung geklickt!");
     }
 
     @FXML
     protected void excelList() {
         hboxExcelListeAnsicht.setVisible(true);
         hboxEinzelerstellung.setVisible(false);
+
+        isExcelListeClicked = true;
+        isEinzelerstellungClicked = false;
+        System.out.println("Excel-Liste geklickt!");
     }
+
+
 }
 
