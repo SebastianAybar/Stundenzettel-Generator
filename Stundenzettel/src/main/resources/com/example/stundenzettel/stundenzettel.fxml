@@ -12,11 +12,11 @@
             <children>
             <HBox alignment="CENTER_LEFT" prefHeight="36.0" prefWidth="281.0" styleClass="hbox-hbox-header">
                <children>
-                      <Button mnemonicParsing="false" onAction="#excelList" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Excel Liste">
+                      <Button fx:id="excelList" mnemonicParsing="false" onAction="#excelList" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Excel Liste">
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font></Button>
-                      <Button mnemonicParsing="false" onAction="#einzerstellung" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Einzelerstellung">
+                      <Button fx:id="einzelerstellung" mnemonicParsing="false" onAction="#einzerstellung" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Einzelerstellung">
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font></Button>
@@ -50,7 +50,7 @@
                 </Button>
             </children>
         </HBox>
-      <HBox HBox.hgrow="ALWAYS" fx:id="hboxEinzelerstellung" alignment="CENTER_LEFT" layoutX="59.0" layoutY="75.0" prefHeight="60.0" prefWidth="493.0" styleClass="hbox-einzelerstellung" visible="false" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="136.0">
+      <HBox fx:id="hboxEinzelerstellung" alignment="CENTER_LEFT" layoutX="59.0" layoutY="75.0" prefHeight="60.0" prefWidth="493.0" styleClass="hbox-einzelerstellung" visible="false" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="136.0" HBox.hgrow="ALWAYS">
          <children>
             <VBox alignment="CENTER" prefHeight="60.0" prefWidth="308.0">
                <children>
@@ -60,7 +60,7 @@
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
-                        <Spinner prefHeight="25.0" prefWidth="139.0" />
+                        <TextField fx:id="textFieldAbrechnungsmonat" prefHeight="25.0" prefWidth="134.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="59.0" prefWidth="186.0">
@@ -69,7 +69,7 @@
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
-                        <TextField prefHeight="25.0" prefWidth="135.0" />
+                        <TextField fx:id="textFieldMitarbeiternummer" prefHeight="25.0" prefWidth="135.0" />
                      </children>
                   </HBox>
                </children>
@@ -82,7 +82,7 @@
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
-                        <TextField prefHeight="25.0" prefWidth="123.0" />
+                        <TextField fx:id="textFieldSvBrutto" prefHeight="25.0" prefWidth="123.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="59.0" prefWidth="183.0">
@@ -91,7 +91,7 @@
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
-                        <TextField prefHeight="25.0" prefWidth="144.0" />
+                        <TextField fx:id="textFieldName" prefHeight="25.0" prefWidth="144.0" />
                      </children>
                   </HBox>
                </children>

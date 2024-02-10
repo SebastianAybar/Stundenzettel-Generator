@@ -19,8 +19,10 @@ public class StundenzettelController {
 
     private AbstractExcelReader abstractExcelReader;
     private AbstractExcelWriter abstractExcelWriter;
+    private EinzelerstellungReader einzelerstellungReader;
     private boolean isExcelListeClicked = true;
     private boolean isEinzelerstellungClicked = false;
+
 
     @FXML
     private Label lblStundenlohn;
@@ -60,6 +62,14 @@ public class StundenzettelController {
     private HBox hboxExcelListeAnsicht;
     @FXML
     private HBox hboxEinzelerstellung;
+    @FXML
+    private TextField textFieldSvBrutto;
+    @FXML
+    private TextField textFieldName;
+    @FXML
+    private TextField textFieldMitarbeiternummer;
+    @FXML
+    private TextField textFieldAbrechnungsmonat;
 
 
     @FXML
@@ -90,15 +100,13 @@ public class StundenzettelController {
         outputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents");
 
         if (isExcelListeClicked) {
-            System.out.println("Methode für Excel-Liste ausgeführt!");
             abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
             List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate();
             abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
             abstractExcelWriter.writeToExcel(jahresliste);
         } else if (isEinzelerstellungClicked) {
-            System.out.println("Methode für Einzelerstellung ausgeführt!");
-            // Klasse erstellen für Einzelerstellung (mit allen relevanten Variablen und Methoden)
-            // hier ausführen
+            einzelerstellungReader = new EinzelerstellungReader(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
+            einzelerstellungReader.writeToExcelEinzelerstellung();
         }
     }
 
@@ -109,7 +117,6 @@ public class StundenzettelController {
 
         isEinzelerstellungClicked = true;
         isExcelListeClicked = false;
-        System.out.println("Einzelerstellung geklickt!");
     }
 
     @FXML
@@ -119,7 +126,6 @@ public class StundenzettelController {
 
         isExcelListeClicked = true;
         isEinzelerstellungClicked = false;
-        System.out.println("Excel-Liste geklickt!");
     }
 
 

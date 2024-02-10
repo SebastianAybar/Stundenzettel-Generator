@@ -67,18 +67,17 @@ public class AbstractExcelWriter {
                                     cell.setCellValue(monatsliste.get(i).getMitarbeiternummer());
                                 }
                                 if (cellValue.startsWith("<<Tag")) {
-                                    //cell.getRow().getCell(cell.getColumnIndex() - 2).setCellValue(datenDesMonats.get(counterTage).get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear()));
                                     if (counterTage < datenDesMonats.size()) {
+                                        //Wir befüllen die Spalte Datum
                                         cell.setCellValue(datenDesMonats.get(counterTage));
-
                                         //Wir befüllen die Spalte KW
                                         cell.getRow().getCell(cell.getColumnIndex() - 2).setCellValue(datenDesMonats.get(counterTage).get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear()));
-
+                                        //Wir befüllen die Spalte Wochentag
                                         DateTimeFormatter deutschFormatierer = DateTimeFormatter.ofPattern("EEEE", Locale.GERMAN);
                                         String wochentag = datenDesMonats.get(counterTage).format(deutschFormatierer);
                                         Cell wochentagCell = cell.getRow().getCell(cell.getColumnIndex() - 1);
                                         wochentagCell.setCellValue(wochentag);
-
+                                        //Wir markieren und leeren die Sonn- und Feiertage
                                         if (wochentag.equals("Sonntag") || isDatumEinFeiertag(datenDesMonats.get(counterTage), Integer.parseInt(datum[0]))) {
                                             markiereRowAlsFreienTag(workbook, row, cell);
                                         }
@@ -91,9 +90,6 @@ public class AbstractExcelWriter {
                                 if (cellValue.startsWith("<<Std")) {
                                     arbeitszeitenCells.add(cell);
                                 }
-                                /*if (cellValue.startsWith("<<KW") && cell.getRow().getCell().) {
-
-                                }*/
                             }
                         }
                     }
@@ -157,7 +153,6 @@ public class AbstractExcelWriter {
                                 aufgezeichnetAm = aufgezeichnetAm.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
                             }
                             arbeitszeitenCells.get(k).getRow().getCell(arbeitszeitenCells.get(k).getColumnIndex() + 2).setCellValue(aufgezeichnetAm);
-
                             //Wir befüllen die Spalte "Arbeitszeit"
                             String temp = arrArbeitszeitenCells[k].replace(",", ".");
                             insgMinuten = (int) (Double.parseDouble(temp) * 60);
