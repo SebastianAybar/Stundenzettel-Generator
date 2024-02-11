@@ -281,7 +281,7 @@ public class AbstractExcelWriter {
         aufgezeichnetAmCell.setCellStyle(freierTagStyle);
     }
 
-    // Prüft, ob das angegebene Datum ein Feiertag ist (mithilfe der Library <jollyday>
+    // Prüft, ob das angegebene Datum ein Feiertag ist (mithilfe der Library <jollyday>)
     private boolean isDatumEinFeiertag(LocalDate datum, int jahr) {
         final HolidayManager feiertageManager = HolidayManager.getInstance(ManagerParameters.create(GERMANY));
         final Set<Holiday> feiertage = feiertageManager.getHolidays(jahr, BUNDESLAND);

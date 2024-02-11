@@ -87,7 +87,6 @@ public class EinzelerstellungReader {
                         if (cellValue.startsWith("<<Std")) {
                             arbeitszeitenCells.add(cell);
                         }
-
                     }
                 }
             }
@@ -96,11 +95,11 @@ public class EinzelerstellungReader {
                 currentSheet.removeRow(row);
             }
 
-            double svBrutto = Double.parseDouble(this.svBrutto);
+            double svBrutto = Double.parseDouble(this.svBrutto.replace(",", "."));
             double stundenlohn = 12;
             double stundensatz = svBrutto / stundenlohn;
             double arbeitstage = stundensatz / 2.5;
-            int gerundeteArbeitstage = (int) Math.round(arbeitstage);
+            int gerundeteArbeitstage = (int) Math.ceil(arbeitstage);
 
             //Wir erstellen ein Array mit den Arbeitszeiten
             double[] arbeitszeiten = generateRandomNumbers(gerundeteArbeitstage, 2.5, 1);
@@ -158,8 +157,9 @@ public class EinzelerstellungReader {
                     arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() - 1).setCellValue(hourMinutes);
 
                 } else {
+
                     arbeitszeitenCells.get(i).setCellValue("");
-                    arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() - 1).setCellValue("");
+                    //arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() - 1).setCellValue("");
                     arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() + 2).setCellValue("");
                 }
             }

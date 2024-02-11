@@ -38,3 +38,4 @@ zufalls_Indizes <- sample(neue_Vector_Groesse, Arbeitstage)
 neuer_Vector[zufalls_Indizes] <- x_double
 neuer_Vector
 
+

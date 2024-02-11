@@ -2,12 +2,16 @@ package com.example.stundenzettel;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,7 +74,22 @@ public class StundenzettelController {
     private TextField textFieldMitarbeiternummer;
     @FXML
     private TextField textFieldAbrechnungsmonat;
-
+    @FXML
+    private Label lblAbrechnungsmonat;
+    @FXML
+    private Label lblMitarbeiternummer;
+    @FXML
+    private Label lblName;
+    @FXML
+    private Label lblSvBrutto;
+    @FXML
+    private Label lblFalschesFormatAbrechnungsmonat;
+    @FXML
+    private Label lblFalschesFormatSvBrutto;
+    @FXML
+    private Label lblMitarbeiternummerEmpty;
+    @FXML
+    private Label lblNameEmpty;
 
     @FXML
     protected void chooseFile() {
@@ -96,6 +115,7 @@ public class StundenzettelController {
 
     @FXML
     protected void transformExcel() {
+
         inputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents\\Mini-Job geringfügig Beschäftigte_01_10_2023_LV_Testnamen.xlsx");
         outputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents");
 
@@ -105,8 +125,74 @@ public class StundenzettelController {
             abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
             abstractExcelWriter.writeToExcel(jahresliste);
         } else if (isEinzelerstellungClicked) {
-            einzelerstellungReader = new EinzelerstellungReader(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
-            einzelerstellungReader.writeToExcelEinzelerstellung();
+
+            /*
+            * Prüfung für Feld 1 (bool richtig oder falsch)
+            * Prüfung für Feld 2 (bool richtig oder falsch)
+            * Prüfung für Feld 3 (bool richtig oder falsch)
+            * Prüfung für Feld 4 (bool richtig oder falsch)
+            *
+            * if(alle bools = true)
+            *   Excel erstellen
+            *
+            * */
+
+            boolean isFeldAbrechnungsmonatGueltig = false;
+            boolean isFeldSvBruttoGueltig = false;
+            boolean isFeldMitarbeiternummerGueltig = false;
+            boolean isFeldNameGueltig = false;
+
+            if (!textFieldMitarbeiternummer.getText().isEmpty()) {
+                defaultMitarbeiternummer();
+                isFeldMitarbeiternummerGueltig = true;
+            } else {
+                mitarbeiternummerEmpty();
+                isFeldMitarbeiternummerGueltig = false;
+            }
+
+            if (!textFieldName.getText().isEmpty()) {
+                defaultName();
+                isFeldNameGueltig = true;
+            } else {
+                nameEmpty();
+                isFeldNameGueltig = false;
+            }
+
+            if (isValidDateFormat(textFieldAbrechnungsmonat.getText())) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM");
+                YearMonth abrechnungsmonat = YearMonth.parse(textFieldAbrechnungsmonat.getText(), formatter);
+                if (abrechnungsmonat.getYear() <= LocalDate.now().getYear()) {
+                    defaultFormatAbrechnungsmonat();
+                    isFeldAbrechnungsmonatGueltig = true;
+                } else {
+                    falschesFormatAbrechnungsmonat();
+                    isFeldAbrechnungsmonatGueltig = false;
+                }
+            } else {
+                falschesFormatAbrechnungsmonat();
+                isFeldAbrechnungsmonatGueltig = false;
+            }
+
+
+            try {
+                double svBrutto = Double.parseDouble(textFieldSvBrutto.getText().replace(",", "."));
+                if (svBrutto >= 0) {
+                    defaultFormatSvBrutto();
+                    isFeldSvBruttoGueltig = true;
+                }
+
+            } catch (NumberFormatException nfe) {
+                falschesFormatSvBrutto();
+                isFeldSvBruttoGueltig = false;
+            } catch (NullPointerException npe) {
+                falschesFormatSvBrutto();
+                isFeldSvBruttoGueltig = false;
+            }
+
+            if (isFeldAbrechnungsmonatGueltig && isFeldSvBruttoGueltig && isFeldNameGueltig && isFeldMitarbeiternummerGueltig) {
+                einzelerstellungReader = new EinzelerstellungReader(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
+                einzelerstellungReader.writeToExcelEinzelerstellung();
+            }
         }
     }
 
@@ -126,8 +212,78 @@ public class StundenzettelController {
 
         isExcelListeClicked = true;
         isEinzelerstellungClicked = false;
+
+        //Wenn Excel Liste angeklickt wird sollen alle Einträge aus Einzelerstellung entfernt werden
+        textFieldAbrechnungsmonat.setText("");
+        textFieldSvBrutto.setText("");
+        textFieldMitarbeiternummer.setText("");
+        textFieldName.setText("");
+        lblNameEmpty.setVisible(false);
+        lblMitarbeiternummerEmpty.setVisible(false);
+        lblFalschesFormatSvBrutto.setVisible(false);
+        lblFalschesFormatAbrechnungsmonat.setVisible(false);
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        textFieldAbrechnungsmonat.setBorder(border);
+        textFieldAbrechnungsmonat.setPromptText("Format: yyyy/MM");
+        textFieldSvBrutto.setBorder(border);
+        textFieldMitarbeiternummer.setBorder(border);
+        textFieldName.setBorder(border);
+
     }
 
+    protected boolean isValidDateFormat(String text) {
+        return text.matches("\\d{4}/\\d{2}");
+    }
+
+    protected void falschesFormatAbrechnungsmonat() {
+        textFieldAbrechnungsmonat.setText("");
+        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
+        textFieldAbrechnungsmonat.setBorder(border);
+        lblFalschesFormatAbrechnungsmonat.setVisible(true);
+    }
+
+    protected void defaultFormatAbrechnungsmonat() {
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        textFieldAbrechnungsmonat.setBorder(border);
+        lblFalschesFormatAbrechnungsmonat.setVisible(false);
+    }
+
+    protected void falschesFormatSvBrutto() {
+        textFieldSvBrutto.setText("");
+        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
+        textFieldSvBrutto.setBorder(border);
+        lblFalschesFormatSvBrutto.setVisible(true);
+    }
+
+    protected void defaultFormatSvBrutto() {
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        textFieldSvBrutto.setBorder(border);
+        lblFalschesFormatSvBrutto.setVisible(false);
+    }
+
+    protected void mitarbeiternummerEmpty() {
+        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
+        textFieldMitarbeiternummer.setBorder(border);
+        lblMitarbeiternummerEmpty.setVisible(true);
+    }
+
+    protected void defaultMitarbeiternummer() {
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        textFieldMitarbeiternummer.setBorder(border);
+        lblMitarbeiternummerEmpty.setVisible(false);
+    }
+
+    protected void nameEmpty() {
+        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
+        textFieldName.setBorder(border);
+        lblNameEmpty.setVisible(true);
+    }
+
+    protected void defaultName() {
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        textFieldName.setBorder(border);
+        lblNameEmpty.setVisible(false);
+    }
 
 }
 

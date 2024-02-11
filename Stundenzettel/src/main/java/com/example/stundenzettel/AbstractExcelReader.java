@@ -16,7 +16,7 @@ public class AbstractExcelReader {
     public List<List<MitarbeiterMonat>> getListOfAbrechnungsmonate() {
         readAllRows();
         orderByAbrechnungsmonat(listMitarbeiterMonat);
-        //printList(listMitarbeiterMonat);
+
 
         List<List<MitarbeiterMonat>> jahresliste = new ArrayList<>();
 
@@ -33,8 +33,6 @@ public class AbstractExcelReader {
             }
         }
         jahresliste.add(monatsliste);
-        //printJahresliste(jahresliste);
-        //System.out.println();
         return jahresliste;
     }
 

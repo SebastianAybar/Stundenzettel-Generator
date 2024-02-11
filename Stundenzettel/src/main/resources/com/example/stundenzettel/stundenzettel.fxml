@@ -50,22 +50,25 @@
                 </Button>
             </children>
         </HBox>
-      <HBox fx:id="hboxEinzelerstellung" alignment="CENTER_LEFT" layoutX="59.0" layoutY="75.0" prefHeight="60.0" prefWidth="493.0" styleClass="hbox-einzelerstellung" visible="false" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="136.0" HBox.hgrow="ALWAYS">
+      <HBox fx:id="hboxEinzelerstellung" alignment="CENTER_LEFT" layoutX="5.0" layoutY="75.0" prefHeight="60.0" prefWidth="598.0" styleClass="hbox-einzelerstellung" visible="false" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="82.0" HBox.hgrow="ALWAYS">
          <children>
             <VBox alignment="CENTER" prefHeight="60.0" prefWidth="308.0">
                <children>
                   <HBox alignment="CENTER" prefHeight="67.0" prefWidth="314.0">
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="119.0" text="Abrechnungsmonat: ">
+                        <Label fx:id="lblAbrechnungsmonat" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="119.0" text="Abrechnungsmonat: ">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
-                        <TextField fx:id="textFieldAbrechnungsmonat" prefHeight="25.0" prefWidth="134.0" />
+                        <TextField fx:id="textFieldAbrechnungsmonat" prefHeight="25.0" prefWidth="134.0" promptText="Format: &quot;yyyy/MM&quot;">
+                           <font>
+                              <Font name="System Italic" size="12.0" />
+                           </font></TextField>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="59.0" prefWidth="186.0">
                      <children>
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="120.0" text="Mitarbeiternummer: ">
+                        <Label fx:id="lblMitarbeiternummer" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="120.0" text="Mitarbeiternummer: ">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
@@ -78,7 +81,7 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="61.0" prefWidth="183.0">
                      <children>
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="63.0" text="SV-Brutto: " textAlignment="RIGHT">
+                        <Label fx:id="lblSvBrutto" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="63.0" text="SV-Brutto: " textAlignment="RIGHT">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
@@ -87,7 +90,7 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="59.0" prefWidth="183.0">
                      <children>
-                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="42.0" text="Name: ">
+                        <Label fx:id="lblName" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="42.0" text="Name: ">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
@@ -133,5 +136,25 @@
                </font></Button>
             </children>
         </VBox>
+      <Label fx:id="lblFalschesFormatAbrechnungsmonat" layoutX="206.0" layoutY="62.0" prefHeight="16.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblFalschesFormatSvBrutto" layoutX="466.0" layoutY="60.0" prefHeight="17.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblMitarbeiternummerEmpty" layoutX="203.0" layoutY="134.0" prefHeight="17.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblNameEmpty" layoutX="433.0" layoutY="132.0" prefHeight="17.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
