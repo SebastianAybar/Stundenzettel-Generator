@@ -159,5 +159,9 @@
       <Label fx:id="lblFalschesFormatStundenlohn" layoutX="507.0" layoutY="45.0" text="ungültige Eingabe" textFill="RED" visible="false" />
       <Label fx:id="lblDateiNichtAkzeptiert" layoutX="117.0" layoutY="128.0" prefHeight="17.0" prefWidth="416.0" text="Die Inhalte der Datei konnten teilweise oder gar nicht gelesen werden" textFill="RED" visible="false" />
       <Label fx:id="lblFalscherPathOutput" layoutX="212.0" layoutY="236.0" text="Ungültige Eingabe" textFill="RED" visible="false" />
+      <Label fx:id="lblSchlussnachricht" layoutX="221.0" layoutY="314.0" text="PDF-Dateien wurden erfolgreich generiert" textAlignment="CENTER" textFill="#00c300" visible="false">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
     </children>
 </AnchorPane>

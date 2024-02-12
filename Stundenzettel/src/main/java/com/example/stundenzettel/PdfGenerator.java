@@ -2,6 +2,11 @@ package com.example.stundenzettel;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -31,7 +36,29 @@ public class PdfGenerator {
                 Paragraph title = createTitle(TITLE_NAME);
 
                 // Unternehmenslogo erstellen
-                Image logo = createLogo(LOGO_PATH);
+                try {
+                    // logo removed
+                    InputStream resourceStream = AbstractExcelWriter.class.getResourceAsStream(resourceFilePath);
+
+                    if (resourceStream == null) {
+                        System.err.println("Image file not found in resources: " + resourceFilePath);
+                        return;
+                    }
+
+                    // Create the destination path in the home directory
+                    Path destinationPath = Paths.get(PATH_DATEI_LOGO);
+
+                    if (!Files.exists(destinationPath)) {
+                        // Copy the file from resources to the home directory
+                        Files.copy(resourceStream, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                        System.out.println("Logo wurde kopiert zu " + destinationPath);
+                    } else {
+                        System.out.println("Logo existiert bereits im Verzeichnis: " + PATH_DATEI_LOGO);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Logo problem hier");
+                }
+                Image logo = createLogo(PATH_DATEI_LOGO);
 
                 // Mitarbeiterinfotabelle (Mitarbeitername, Mitarbeiternummer, Jahr/Monat) erstellen
                 PdfPTable mitarbeiterinfoTabelle = createMitarbeiterinfoTabelle(workbook.getSheetAt(i));

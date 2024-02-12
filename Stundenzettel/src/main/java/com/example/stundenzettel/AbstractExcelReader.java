@@ -15,6 +15,13 @@ public class AbstractExcelReader {
 
     public List<List<MitarbeiterMonat>> getListOfAbrechnungsmonate() {
         readAllRows();
+
+        // Wenn in der Excel keine Personen mit Gehalt existieren, ist die Liste leer.
+        // Es werden also keine PDF-Dateien erstellt
+        if (listMitarbeiterMonat.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         orderByAbrechnungsmonat(listMitarbeiterMonat);
 
 
@@ -70,17 +77,13 @@ public class AbstractExcelReader {
                 try {
                     if (Double.parseDouble(mitarbeiterMonat.getSvBrutto()) > 0) {
                         listMitarbeiterMonat.add(mitarbeiterMonat);
+                        System.out.println("Added Person: " + mitarbeiterMonat.getNachnameVorname());
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException | NullPointerException e) {
 //                    e.printStackTrace();
-                    System.out.println("Info");
-                } catch (NullPointerException e) {
-//                    e.printStackTrace();
-                    System.out.println("Info");
+                    System.out.println("Row enthält keinen gültigen Sv Brutto");
                 }
             }
-
-//            listMitarbeiterMonat.remove(0);
 
             workbook.close();
         } catch (IOException e) {

@@ -9,6 +9,9 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -98,6 +101,8 @@ public class StundenzettelController implements Initializable {
     private Label lblDateiNichtAkzeptiert;
     @FXML
     private Label lblFalscherPathOutput;
+    @FXML
+    private Label lblSchlussnachricht;
 
     @FXML
     protected void chooseFile() {
@@ -134,6 +139,7 @@ public class StundenzettelController implements Initializable {
 //        outputPathTextField.setText("C:\\Users\\MM\\Downloads\\test");
 
         if (isExcelListeClicked) {
+            defaultSchlussnachricht();
             boolean isFeldStundenlohnGueltig = false;
             boolean isFeldPathInputGueltig = false;
             boolean isFeldPathOutputGueltig = false;
@@ -142,21 +148,19 @@ public class StundenzettelController implements Initializable {
             isFeldStundenlohnGueltig = checkFieldStundenlohn();
 
             // Prüfung: Feld PathInput
-            if(!inputPathTextField.getText().isEmpty()) {
+            if (!inputPathTextField.getText().isEmpty()) {
                 defaultPathInput();
                 isFeldPathInputGueltig = true;
             } else {
                 falscherPathInput();
-                isFeldPathInputGueltig = false;
             }
 
             // Prüfung: Feld PathOutput
-            if(!outputPathTextField.getText().isEmpty()) {
+            if (!outputPathTextField.getText().isEmpty()) {
                 defaultPathOutput();
                 isFeldPathOutputGueltig = true;
             } else {
                 falscherPathOutput();
-                isFeldPathOutputGueltig = false;
             }
 
             if (isFeldStundenlohnGueltig && isFeldPathInputGueltig && isFeldPathOutputGueltig) {
@@ -168,9 +172,16 @@ public class StundenzettelController implements Initializable {
                     List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate();
                     defaultFormatExcelDatei();
 
+                    if (jahresliste.isEmpty()) {
+                        fehlgeschlageneSchlussnachricht();
+                        return;
+                    }
+
                     abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
-                    abstractExcelWriter.writeToExcel(jahresliste, Double.parseDouble(textFieldStundenlohn.getText()));
+                    abstractExcelWriter.writeToExcel(jahresliste, Double.parseDouble(textFieldStundenlohn.getText().replace(",", ".")));
+                    erfolgreicheSchlussnachricht();
                 } catch (Exception e) {
+//                    e.printStackTrace();
                     System.out.println("Falsches Format der Excel-Datei");
                     falschesFormatExcelDatei();
                 }
@@ -201,7 +212,6 @@ public class StundenzettelController implements Initializable {
                 isFeldMitarbeiternummerGueltig = true;
             } else {
                 mitarbeiternummerEmpty();
-                isFeldMitarbeiternummerGueltig = false;
             }
 
             // Prüfung: Feld Name
@@ -210,7 +220,6 @@ public class StundenzettelController implements Initializable {
                 isFeldNameGueltig = true;
             } else {
                 nameEmpty();
-                isFeldNameGueltig = false;
             }
 
             // Prüfung: Feld Abrechnungsmonat
@@ -222,11 +231,9 @@ public class StundenzettelController implements Initializable {
                     isFeldAbrechnungsmonatGueltig = true;
                 } else {
                     falschesFormatAbrechnungsmonat();
-                    isFeldAbrechnungsmonatGueltig = false;
                 }
             } else {
                 falschesFormatAbrechnungsmonat();
-                isFeldAbrechnungsmonatGueltig = false;
             }
 
             // Prüfung: Feld SvBrutto
@@ -237,14 +244,11 @@ public class StundenzettelController implements Initializable {
                     isFeldSvBruttoGueltig = true;
                 } else {
                     falschesFormatSvBrutto();
-                    isFeldSvBruttoGueltig = false;
                 }
             } catch (NumberFormatException nfe) {
                 falschesFormatSvBrutto();
-                isFeldSvBruttoGueltig = false;
             } catch (NullPointerException npe) {
                 falschesFormatSvBrutto();
-                isFeldSvBruttoGueltig = false;
             }
 
             // Prüfung: Feld Stundenlohn
@@ -302,25 +306,59 @@ public class StundenzettelController implements Initializable {
 
 
     private void loadStundenlohnFromDatei() {
-        String pathStundenlohnDatei = "E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\src\\main\\resources\\com\\example\\stundenzettel\\stundenlohn.txt";
-        String defaultStundenlohn = DEFAULT_STUNDENLOHN;
+        Path path = Paths.get(PATH_DATEI_STUNDENLOHN);
+        String stundenlohn = DEFAULT_STUNDENLOHN;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(pathStundenlohnDatei))) {
-            String zeile = reader.readLine();
-            if (zeile != null && !zeile.isEmpty()) {
-                textFieldStundenlohn.setText(zeile.trim());
+        // Wenn stundenlohn.txt im Home-Verzeichnis nicht existiert
+        if (!Files.exists(path)) {
+            // Neue stundenlohn.txt im Home-Verzeichnis erstellen. Wenns nicht klappt, dann ohne Datei erstellen weiter
+            System.out.println("Datei existiert nicht!");
+            try {
+                Files.createFile(path);
+                System.out.println("Neue Datei erstellt in: " + PATH_DATEI_STUNDENLOHN);
+            } catch (Exception e) {
+                System.out.println("Stundenlohn Datei konnte nicht im Verzeichnis " + PATH_DATEI_STUNDENLOHN +
+                        " erstellt werden");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            textFieldStundenlohn.setText(defaultStundenlohn);
+
+            try (PrintWriter printWriter = new PrintWriter(new FileOutputStream(PATH_DATEI_STUNDENLOHN))) {
+                printWriter.println(stundenlohn);
+                System.out.println("Wert >" + stundenlohn + "< in die neue Datei geschrieben");
+            } catch (IOException e) {
+                System.out.println("In die Stundenlohn Datei im Verzeichnis " + PATH_DATEI_STUNDENLOHN +
+                        " konnte nicht reingeschrieben werden, weil sie nicht existiert");
+            }
+
+        } else {
+            System.out.println("Datei existiert bereits!");
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(PATH_DATEI_STUNDENLOHN))) {
+                stundenlohn = bufferedReader.readLine().trim();
+                System.out.println("Stundenlon >" + stundenlohn + "< aus Datei gelesen");
+            } catch (FileNotFoundException e) {
+                System.err.println("Stundenlohn Datei nicht gefunden in Verzeichnis: " + PATH_DATEI_STUNDENLOHN);
+            } catch (IOException e) {
+                System.out.println("Fehler mit Stundenlohn einlesen aus Datei");
+            }
         }
+
+        textFieldStundenlohn.setText(stundenlohn);
     }
 
     private void saveStundenlohnToDatei(String stundenlohn) {
-        try (FileWriter fileWriter = new FileWriter("E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\src\\main\\resources\\com\\example\\stundenzettel\\stundenlohn.txt")) {
-            fileWriter.write(stundenlohn);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Path path = Paths.get(PATH_DATEI_STUNDENLOHN);
+
+        if (!Files.exists(path)) {
+            System.out.println("Es gibt die Stundenlohn Datei nicht. Der Wert " + stundenlohn +
+                    " kann also nicht gespeichert werden und wird verworfen");
+        } else {
+            System.out.println("Datei zum speichern des Wertes gefunden!");
+            try (PrintWriter printWriter = new PrintWriter(new FileOutputStream(PATH_DATEI_STUNDENLOHN))) {
+                printWriter.println(stundenlohn.trim());
+                System.out.println("Wert >" + stundenlohn + "< in die existierende Stundenlohn Datei geschrieben");
+            } catch (IOException e) {
+                System.out.println("In die Stundenlohn Datei im Verzeichnis " + PATH_DATEI_STUNDENLOHN +
+                        " konnte nicht reingeschrieben werden (Problem)");
+            }
         }
     }
 
@@ -338,10 +376,12 @@ public class StundenzettelController implements Initializable {
                 }
 
             } catch (NumberFormatException e) {
+                System.out.println("Aud dem Stundenlohn Feld konnte kein gültiger Double entnommen werden. ");
                 e.printStackTrace();
                 falschesFormatStundenlohn();
                 return false;
             } catch (NullPointerException e) {
+                System.out.println("Stundenlohn Feld = null");
                 e.printStackTrace();
                 falschesFormatStundenlohn();
                 return false;
@@ -460,4 +500,29 @@ public class StundenzettelController implements Initializable {
         lblFalscherPathOutput.setVisible(false);
     }
 
+    protected void fehlgeschlageneSchlussnachricht() {
+        lblSchlussnachricht.setText("Es wurden keine Personen mit Gehälter gefunden");
+        lblSchlussnachricht.setTextFill(Color.RED);
+        lblSchlussnachricht.setVisible(true);
+    }
+
+    protected void erfolgreicheSchlussnachricht() {
+        lblSchlussnachricht.setText("PDF-Dateien wurden erfolgreich generiert");
+        lblSchlussnachricht.setTextFill(Color.valueOf("00c300"));
+        lblSchlussnachricht.setVisible(true);
+    }
+
+    protected void defaultSchlussnachricht() {
+        lblSchlussnachricht.setText("");
+        lblSchlussnachricht.setTextFill(Color.BLACK);
+        lblSchlussnachricht.setVisible(false);
+    }
+
+    private void displayErrorInGui(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

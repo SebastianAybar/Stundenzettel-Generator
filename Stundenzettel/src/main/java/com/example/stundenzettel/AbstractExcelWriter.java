@@ -11,6 +11,10 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.poi.ss.usermodel.Font;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -21,6 +25,7 @@ import java.util.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.example.stundenzettel.Attribute.*;
 import static java.util.Locale.GERMANY;
 
 
@@ -28,7 +33,6 @@ public class AbstractExcelWriter {
 
     private final String BUNDESLAND = "he";
     //    private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
-    private final String pathTemplate = "E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
     private final String outputPath;
 
     AbstractExcelWriter(String outputPath) {
@@ -40,7 +44,28 @@ public class AbstractExcelWriter {
         for (List<MitarbeiterMonat> monatsliste : jahresliste) {
             Workbook workbook = null;
             try {
-                InputStream inputStream = new FileInputStream(pathTemplate);
+                String resourceFilePath = "/Stundenzettel_Vorlage.xlsx";
+                InputStream resourceStream = AbstractExcelWriter.class.getResourceAsStream(resourceFilePath);
+
+                if (resourceStream == null) {
+                    System.err.println("File not found in resources: " + resourceFilePath);
+                    return;
+                }
+
+                // Create the destination path in the home directory
+                Path destinationPath = Paths.get(PATH_DATEI_STUNDENZETTELVORLAGE);
+
+                if (!Files.exists(destinationPath)) {
+                    // Copy the file from resources to the home directory
+                    Files.copy(resourceStream, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("Stundenzettel_Vorlage wurde kopiert zu" + destinationPath);
+                } else {
+                    System.out.println("Vorlage existiert bereits im Verzeichnis: " + PATH_DATEI_STUNDENZETTELVORLAGE);
+                }
+
+
+                InputStream inputStream = new FileInputStream(PATH_DATEI_STUNDENZETTELVORLAGE);
+
                 workbook = WorkbookFactory.create(inputStream);
                 Sheet currentSheet = workbook.getSheetAt(0);
                 for (int i = 0; i < monatsliste.size(); i++) {
@@ -178,7 +203,7 @@ public class AbstractExcelWriter {
 
                 workbook.removeSheetAt(0);
 
-                // Excel-Output-Dateien
+//                 Excel-Output-Dateien
 //                try (FileOutputStream fileOutputStream = new FileOutputStream(outputPath + "\\test" + counter++ + ".xlsx")) {
 //                    workbook.write(fileOutputStream);
 //                }
@@ -187,6 +212,8 @@ public class AbstractExcelWriter {
                 PdfGenerator pdfGenerator = new PdfGenerator();
                 pdfGenerator.createPdf(workbook, outputPath, monatsliste.get(0).getAbrechnungsmonat().replace("/", "-"), counter++);
             } catch (Exception e) {
+                System.out.println("EXCEPTION im Writer!");
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }

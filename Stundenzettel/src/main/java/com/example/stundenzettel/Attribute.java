@@ -5,11 +5,21 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 
+import java.io.File;
+
 public class Attribute {
 
     // DOKUMENT
-    public static final String DOCUMENT_PATH = "C:\\Users\\MM\\Downloads\\test\\";
-    public static final String DOCUMENT_FILE_NAME = "StundenzettelPDF";
+    public static final String HOME_DIRECTORY = System.getProperty("user.home");
+    public static final String DATEI_STUNDENLOHN_NAME = "stundenlohn";
+    public static final String DATEI_STUNDENLOHN_SUFFIX = ".txt";
+    public static final String PATH_DATEI_STUNDENLOHN = HOME_DIRECTORY + File.separator + DATEI_STUNDENLOHN_NAME + DATEI_STUNDENLOHN_SUFFIX;
+    public static final String DATEI_STUNDENZETTELVORLAGE_NAME = "Stundenzettel_Vorlage";
+    public static final String DATEI_STUNDENZETTELVORLAGE_SUFFIX = ".xlsx";
+    public static final String PATH_DATEI_STUNDENZETTELVORLAGE = HOME_DIRECTORY + File.separator + DATEI_STUNDENZETTELVORLAGE_NAME + DATEI_STUNDENZETTELVORLAGE_SUFFIX;
+    public static final String DATEI_LOGO_NAME = "logo_company";
+    public static final String DATEI_LOGO_SUFFIX = ".png";
+    public static final String PATH_DATEI_LOGO = HOME_DIRECTORY + File.separator + DATEI_LOGO_NAME + DATEI_LOGO_SUFFIX;
     public static final String DOCUMENT_FILE_SUFFIX = ".pdf";
     public static final Rectangle PAGE_DIN_SIZE = PageSize.A4;
     public static final int PAGE_MARGIN_LEFT = 0;
@@ -25,8 +35,6 @@ public class Attribute {
     public static final int TITLE_SPACING_AFTER = 55;
     public static final int TITLE_INDENTATION_LEFT = 60;
 
-    // LOGO
-    public static final String LOGO_PATH = "E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\src\\main\\resources\\logo_company.png";
     public static final int LOGO_SCALE_PERCENT = 35;
     public static final int LOGO_ABSOLUTE_POS_X = 350;
     public static final int LOGO_ABSOLUTE_POS_Y = 760;
@@ -98,6 +106,8 @@ public class Attribute {
     public static final String DEFAULT_VALUE = "DEF";
     public static final String DEFAULT_STUNDENLOHN = "12";
     public static final String DATE_GERMAN_FORMAT = "dd.MM.yyyy";
+
+
 
 
 }
