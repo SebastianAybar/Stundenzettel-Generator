@@ -1,25 +1,26 @@
 package com.example.stundenzettel;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
-import java.io.File;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 
-import static java.util.Collections.*;
+import static com.example.stundenzettel.Attribute.*;
 
-public class StundenzettelController {
+public class StundenzettelController implements Initializable {
 
     private AbstractExcelReader abstractExcelReader;
     private AbstractExcelWriter abstractExcelWriter;
@@ -27,9 +28,10 @@ public class StundenzettelController {
     private boolean isExcelListeClicked = true;
     private boolean isEinzelerstellungClicked = false;
 
-
     @FXML
     private Label lblStundenlohn;
+    @FXML
+    private Label lblDatei;
     @FXML
     private TextField textFieldStundenlohn;
     @FXML
@@ -90,6 +92,12 @@ public class StundenzettelController {
     private Label lblMitarbeiternummerEmpty;
     @FXML
     private Label lblNameEmpty;
+    @FXML
+    private Label lblFalschesFormatStundenlohn;
+    @FXML
+    private Label lblDateiNichtAkzeptiert;
+    @FXML
+    private Label lblFalscherPathOutput;
 
     @FXML
     protected void chooseFile() {
@@ -115,33 +123,79 @@ public class StundenzettelController {
 
     @FXML
     protected void transformExcel() {
+//        inputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents\\Mini-Job geringfügig Beschäftigte_01_10_2023_LV_Testnamen.xlsx");
+//        outputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents");
+//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\bsp.xlsx");
+//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\einEintrag.xlsx");
+//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\einMonat.xlsx");
+//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\mitLuecke.xlsx");
+//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\komplettFalschesFormat.xlsx");
 
-        inputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents\\Mini-Job geringfügig Beschäftigte_01_10_2023_LV_Testnamen.xlsx");
-        outputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents");
+//        outputPathTextField.setText("C:\\Users\\MM\\Downloads\\test");
 
         if (isExcelListeClicked) {
-            abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
-            List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate();
-            abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
-            abstractExcelWriter.writeToExcel(jahresliste);
+            boolean isFeldStundenlohnGueltig = false;
+            boolean isFeldPathInputGueltig = false;
+            boolean isFeldPathOutputGueltig = false;
+
+            // Prüfung: Feld Stundenlohn
+            isFeldStundenlohnGueltig = checkFieldStundenlohn();
+
+            // Prüfung: Feld PathInput
+            if(!inputPathTextField.getText().isEmpty()) {
+                defaultPathInput();
+                isFeldPathInputGueltig = true;
+            } else {
+                falscherPathInput();
+                isFeldPathInputGueltig = false;
+            }
+
+            // Prüfung: Feld PathOutput
+            if(!outputPathTextField.getText().isEmpty()) {
+                defaultPathOutput();
+                isFeldPathOutputGueltig = true;
+            } else {
+                falscherPathOutput();
+                isFeldPathOutputGueltig = false;
+            }
+
+            if (isFeldStundenlohnGueltig && isFeldPathInputGueltig && isFeldPathOutputGueltig) {
+                saveStundenlohnToDatei(textFieldStundenlohn.getText());
+
+                // Prüfung: Feld PathInput: try/catch ist gleichzeitig Prüfung für inputPathField (richtiges Dateiformat oder nicht)
+                try {
+                    abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
+                    List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate();
+                    defaultFormatExcelDatei();
+
+                    abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
+                    abstractExcelWriter.writeToExcel(jahresliste, Double.parseDouble(textFieldStundenlohn.getText()));
+                } catch (Exception e) {
+                    System.out.println("Falsches Format der Excel-Datei");
+                    falschesFormatExcelDatei();
+                }
+            }
+
         } else if (isEinzelerstellungClicked) {
 
             /*
-            * Prüfung für Feld 1 (bool richtig oder falsch)
-            * Prüfung für Feld 2 (bool richtig oder falsch)
-            * Prüfung für Feld 3 (bool richtig oder falsch)
-            * Prüfung für Feld 4 (bool richtig oder falsch)
-            *
-            * if(alle bools = true)
-            *   Excel erstellen
-            *
-            * */
+             * Prüfung für Feld 1 (bool richtig oder falsch)
+             * Prüfung für Feld 2 (bool richtig oder falsch)
+             * Prüfung für Feld 3 (bool richtig oder falsch)
+             * Prüfung für Feld 4 (bool richtig oder falsch)
+             *
+             * if(alle bools = true)
+             *   Excel erstellen
+             *
+             * */
 
             boolean isFeldAbrechnungsmonatGueltig = false;
             boolean isFeldSvBruttoGueltig = false;
             boolean isFeldMitarbeiternummerGueltig = false;
             boolean isFeldNameGueltig = false;
+            boolean isFeldStundenlohnGueltig = false;
 
+            // Prüfung: Feld Mitarbeiternummer
             if (!textFieldMitarbeiternummer.getText().isEmpty()) {
                 defaultMitarbeiternummer();
                 isFeldMitarbeiternummerGueltig = true;
@@ -150,6 +204,7 @@ public class StundenzettelController {
                 isFeldMitarbeiternummerGueltig = false;
             }
 
+            // Prüfung: Feld Name
             if (!textFieldName.getText().isEmpty()) {
                 defaultName();
                 isFeldNameGueltig = true;
@@ -158,6 +213,7 @@ public class StundenzettelController {
                 isFeldNameGueltig = false;
             }
 
+            // Prüfung: Feld Abrechnungsmonat
             if (isValidDateFormat(textFieldAbrechnungsmonat.getText())) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM");
                 YearMonth abrechnungsmonat = YearMonth.parse(textFieldAbrechnungsmonat.getText(), formatter);
@@ -173,14 +229,16 @@ public class StundenzettelController {
                 isFeldAbrechnungsmonatGueltig = false;
             }
 
-
+            // Prüfung: Feld SvBrutto
             try {
                 double svBrutto = Double.parseDouble(textFieldSvBrutto.getText().replace(",", "."));
                 if (svBrutto >= 0) {
                     defaultFormatSvBrutto();
                     isFeldSvBruttoGueltig = true;
+                } else {
+                    falschesFormatSvBrutto();
+                    isFeldSvBruttoGueltig = false;
                 }
-
             } catch (NumberFormatException nfe) {
                 falschesFormatSvBrutto();
                 isFeldSvBruttoGueltig = false;
@@ -189,7 +247,11 @@ public class StundenzettelController {
                 isFeldSvBruttoGueltig = false;
             }
 
-            if (isFeldAbrechnungsmonatGueltig && isFeldSvBruttoGueltig && isFeldNameGueltig && isFeldMitarbeiternummerGueltig) {
+            // Prüfung: Feld Stundenlohn
+            isFeldStundenlohnGueltig = checkFieldStundenlohn();
+
+
+            if (isFeldAbrechnungsmonatGueltig && isFeldSvBruttoGueltig && isFeldNameGueltig && isFeldMitarbeiternummerGueltig && isFeldStundenlohnGueltig) {
                 einzelerstellungReader = new EinzelerstellungReader(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
                 einzelerstellungReader.writeToExcelEinzelerstellung();
             }
@@ -229,6 +291,65 @@ public class StundenzettelController {
         textFieldMitarbeiternummer.setBorder(border);
         textFieldName.setBorder(border);
 
+    }
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        loadStundenlohnFromDatei();
+    }
+
+
+    private void loadStundenlohnFromDatei() {
+        String pathStundenlohnDatei = "E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\src\\main\\resources\\com\\example\\stundenzettel\\stundenlohn.txt";
+        String defaultStundenlohn = DEFAULT_STUNDENLOHN;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(pathStundenlohnDatei))) {
+            String zeile = reader.readLine();
+            if (zeile != null && !zeile.isEmpty()) {
+                textFieldStundenlohn.setText(zeile.trim());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            textFieldStundenlohn.setText(defaultStundenlohn);
+        }
+    }
+
+    private void saveStundenlohnToDatei(String stundenlohn) {
+        try (FileWriter fileWriter = new FileWriter("E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\src\\main\\resources\\com\\example\\stundenzettel\\stundenlohn.txt")) {
+            fileWriter.write(stundenlohn);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean checkFieldStundenlohn() {
+        if (!textFieldStundenlohn.getText().isEmpty()) {
+            try {
+                double stundenlohn = Double.parseDouble(textFieldStundenlohn.getText().replace(",", "."));
+
+                if (stundenlohn >= 0) {
+                    defaultFormatStundenlohn();
+                    return true;
+                } else {
+                    falschesFormatStundenlohn();
+                    return false;
+                }
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                falschesFormatStundenlohn();
+                return false;
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                falschesFormatStundenlohn();
+                return false;
+            }
+        } else {
+            falschesFormatStundenlohn();
+            return false;
+        }
     }
 
     protected boolean isValidDateFormat(String text) {
@@ -285,5 +406,58 @@ public class StundenzettelController {
         lblNameEmpty.setVisible(false);
     }
 
-}
+    protected void falschesFormatStundenlohn() {
+        textFieldStundenlohn.setText("");
+        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
+        textFieldStundenlohn.setBorder(border);
+        lblFalschesFormatStundenlohn.setVisible(true);
+    }
 
+    protected void defaultFormatStundenlohn() {
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        textFieldStundenlohn.setBorder(border);
+        lblFalschesFormatStundenlohn.setVisible(false);
+    }
+
+    protected void falschesFormatExcelDatei() {
+        inputPathTextField.setText("");
+        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
+        inputPathTextField.setBorder(border);
+        lblDateiNichtAkzeptiert.setText("Die Inhalte der Datei konnten teilweise oder gar nicht gelesen werden");
+        lblDateiNichtAkzeptiert.setVisible(true);
+    }
+
+    protected void defaultFormatExcelDatei() {
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        inputPathTextField.setBorder(border);
+        lblDateiNichtAkzeptiert.setVisible(false);
+    }
+
+    protected void falscherPathInput() {
+        inputPathTextField.setText("");
+        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
+        inputPathTextField.setBorder(border);
+        lblDateiNichtAkzeptiert.setText("Ungültige Eingabe");
+        lblDateiNichtAkzeptiert.setVisible(true);
+    }
+
+    protected void defaultPathInput() {
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        inputPathTextField.setBorder(border);
+        lblDateiNichtAkzeptiert.setVisible(false);
+    }
+
+    protected void falscherPathOutput() {
+        outputPathTextField.setText("");
+        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
+        outputPathTextField.setBorder(border);
+        lblFalscherPathOutput.setVisible(true);
+    }
+
+    protected void defaultPathOutput() {
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        outputPathTextField.setBorder(border);
+        lblFalscherPathOutput.setVisible(false);
+    }
+
+}
