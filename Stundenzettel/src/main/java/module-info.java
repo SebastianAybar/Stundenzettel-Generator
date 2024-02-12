@@ -15,6 +15,7 @@ module com.example.stundenzettel {
     requires org.apache.commons.io;
     requires org.apache.commons.compress;
     requires commons.math3;
+    requires itextpdf;
     opens com.example.stundenzettel to javafx.fxml;
     exports com.example.stundenzettel;
 }

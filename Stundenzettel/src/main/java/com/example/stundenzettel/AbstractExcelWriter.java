@@ -1,27 +1,25 @@
 package com.example.stundenzettel;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import de.focus_shift.jollyday.core.Holiday;
 import de.focus_shift.jollyday.core.HolidayManager;
 import de.focus_shift.jollyday.core.ManagerParameters;
-import org.apache.poi.ss.formula.functions.Na;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.poi.ss.usermodel.Font;
 
-import javax.xml.transform.Source;
 import java.io.*;
-import java.security.spec.RSAOtherPrimeInfo;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.*;
 import java.time.format.DateTimeFormatter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.time.chrono.ChronoLocalDate;
+import java.util.List;
 
 import static java.util.Locale.GERMANY;
 
@@ -29,20 +27,21 @@ import static java.util.Locale.GERMANY;
 public class AbstractExcelWriter {
 
     private final String BUNDESLAND = "he";
-    private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
-    //private final String pathTemplate = "E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
+    //    private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
+    private final String pathTemplate = "E:\\zAndere\\GitRepos\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
     private final String outputPath;
 
     AbstractExcelWriter(String outputPath) {
         this.outputPath = outputPath;
     }
 
-    public void writeToExcel(List<List<MitarbeiterMonat>> jahresliste) {
+    public void writeToExcel(List<List<MitarbeiterMonat>> jahresliste, double stundenlohn) {
         int counter = 1;
         for (List<MitarbeiterMonat> monatsliste : jahresliste) {
+            Workbook workbook = null;
             try {
                 InputStream inputStream = new FileInputStream(pathTemplate);
-                Workbook workbook = WorkbookFactory.create(inputStream);
+                workbook = WorkbookFactory.create(inputStream);
                 Sheet currentSheet = workbook.getSheetAt(0);
                 for (int i = 0; i < monatsliste.size(); i++) {
                     workbook.cloneSheet(0);
@@ -100,7 +99,7 @@ public class AbstractExcelWriter {
 
                     //Wir erstellen ein Array mit den normalverteilten Arbeitszeiten
                     double svBrutto = Double.parseDouble(monatsliste.get(i).getSvBrutto());
-                    double stundenlohn = 12;
+//                    double stundenlohn = 12;
                     double stundensatz = svBrutto / stundenlohn;
                     double arbeitstage = stundensatz / 2.5;
                     int gerundeteArbeitstage = (int) Math.round(arbeitstage);
@@ -176,9 +175,17 @@ public class AbstractExcelWriter {
                     evaluator.evaluateAll();
 
                 }
-                try (FileOutputStream fileOutputStream = new FileOutputStream(outputPath + "\\test" + counter++ + ".xlsx")) {
-                    workbook.write(fileOutputStream);
-                }
+
+                workbook.removeSheetAt(0);
+
+                // Excel-Output-Dateien
+//                try (FileOutputStream fileOutputStream = new FileOutputStream(outputPath + "\\test" + counter++ + ".xlsx")) {
+//                    workbook.write(fileOutputStream);
+//                }
+
+                // PDF-Output-Dateien
+                PdfGenerator pdfGenerator = new PdfGenerator();
+                pdfGenerator.createPdf(workbook, outputPath, monatsliste.get(0).getAbrechnungsmonat().replace("/", "-"), counter++);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -248,7 +255,7 @@ public class AbstractExcelWriter {
         CellStyle freierTagStyleFuerDatum = workbook.createCellStyle();
         freierTagStyle.cloneStyleFrom(originalStyle);
 
-        freierTagStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        freierTagStyle.setFillPattern(FillPatternType.BRICKS);
         freierTagStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         freierTagStyle.setBorderBottom(BorderStyle.THIN);
         freierTagStyle.setBorderLeft(BorderStyle.THIN);
@@ -292,4 +299,6 @@ public class AbstractExcelWriter {
         }
         return false;
     }
+
+
 }

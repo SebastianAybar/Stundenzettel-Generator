@@ -67,10 +67,20 @@ public class AbstractExcelReader {
                 mitarbeiterMonat.setSvTage(getCellAsString(row.getCell(18)));
                 mitarbeiterMonat.setNatKennzeichen(getCellAsString(row.getCell(19)));
                 mitarbeiterMonat.setMidijobregelung(getCellAsString(row.getCell(20)));*/
-                listMitarbeiterMonat.add(mitarbeiterMonat);
+                try {
+                    if (Double.parseDouble(mitarbeiterMonat.getSvBrutto()) > 0) {
+                        listMitarbeiterMonat.add(mitarbeiterMonat);
+                    }
+                } catch (NumberFormatException e) {
+//                    e.printStackTrace();
+                    System.out.println("Info");
+                } catch (NullPointerException e) {
+//                    e.printStackTrace();
+                    System.out.println("Info");
+                }
             }
 
-            listMitarbeiterMonat.remove(0);
+//            listMitarbeiterMonat.remove(0);
 
             workbook.close();
         } catch (IOException e) {
