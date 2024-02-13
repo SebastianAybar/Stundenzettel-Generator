@@ -32,7 +32,6 @@ import static java.util.Locale.GERMANY;
 public class AbstractExcelWriter {
 
     private final String BUNDESLAND = "he";
-    //    private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
     private final String outputPath;
 
     AbstractExcelWriter(String outputPath) {
@@ -124,7 +123,6 @@ public class AbstractExcelWriter {
 
                     //Wir erstellen ein Array mit den normalverteilten Arbeitszeiten
                     double svBrutto = Double.parseDouble(monatsliste.get(i).getSvBrutto());
-//                    double stundenlohn = 12;
                     double stundensatz = svBrutto / stundenlohn;
                     double arbeitstage = stundensatz / 2.5;
                     int gerundeteArbeitstage = (int) Math.round(arbeitstage);
@@ -150,7 +148,7 @@ public class AbstractExcelWriter {
 
                     Random randomNumberGen = new Random();
                     int randomNumber;
-                    DecimalFormat decimalFormat = new DecimalFormat("###.##");
+                    DecimalFormat decimalFormat = new DecimalFormat("###.#");
 
                     for (int j = 0; j < arrayArbeitstage.length; j++) {
                         randomNumber = randomNumberGen.nextInt(arbeitszeitenCells.size() - 1);
@@ -162,7 +160,8 @@ public class AbstractExcelWriter {
 
                     //Befüllen des Sheets
                     String hourMinutes;
-                    int insgMinuten, stunden, minuten;
+                    double insgMinuten, minuten;
+                    int stunden;
 
                     for (int k = 0; k < arbeitszeitenCells.size(); k++) {
                         hourMinutes = "";
@@ -179,13 +178,13 @@ public class AbstractExcelWriter {
                             arbeitszeitenCells.get(k).getRow().getCell(arbeitszeitenCells.get(k).getColumnIndex() + 2).setCellValue(aufgezeichnetAm);
                             //Wir befüllen die Spalte "Arbeitszeit"
                             String temp = arrArbeitszeitenCells[k].replace(",", ".");
-                            insgMinuten = (int) (Double.parseDouble(temp) * 60);
+                            insgMinuten = Double.parseDouble(temp) * 60;
                             stunden = (int) Double.parseDouble(temp);
                             minuten = insgMinuten % 60;
 
                             hourMinutes = hourMinutes + "0" + stunden + ":";
-                            if (minuten >= 10) hourMinutes += minuten;
-                            else hourMinutes += "0" + minuten;
+                            if (minuten >= 10) hourMinutes += String.valueOf(minuten).split("\\.")[0];
+                            else hourMinutes += "0" + String.valueOf(minuten).split("\\.")[0];
 
                             arbeitszeitenCells.get(k).getRow().getCell(arbeitszeitenCells.get(k).getColumnIndex() - 1).setCellValue(hourMinutes);
                         } else {
@@ -228,7 +227,8 @@ public class AbstractExcelWriter {
             do {
                 randomValue = normalDistribution.sample();
             } while (randomValue < 0.25 || randomValue > 4);
-            result[i] = randomValue;
+            DecimalFormat decimalFormat = new DecimalFormat("###.#");
+            result[i] = Double.parseDouble(decimalFormat.format(randomValue).replace(",", "."));
         }
         return result;
     }
