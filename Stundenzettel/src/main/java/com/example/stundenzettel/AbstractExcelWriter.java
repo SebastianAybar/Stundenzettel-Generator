@@ -210,7 +210,7 @@ public class AbstractExcelWriter {
 
                 // PDF-Output-Dateien
                 PdfGenerator pdfGenerator = new PdfGenerator();
-                pdfGenerator.createPdf(workbook, outputPath, monatsliste.get(0).getAbrechnungsmonat().replace("/", "-"), counter++);
+                pdfGenerator.createPdf(workbook, outputPath, monatsliste.get(0).getAbrechnungsmonat().replace("/", "-"));
             } catch (Exception e) {
                 System.out.println("EXCEPTION im Writer!");
                 e.printStackTrace();

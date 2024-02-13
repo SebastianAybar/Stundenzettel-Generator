@@ -6,6 +6,7 @@ import de.focus_shift.jollyday.core.ManagerParameters;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.poi.ss.usermodel.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -18,11 +19,12 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.*;
 
+import static com.example.stundenzettel.Attribute.PATH_DATEI_STUNDENZETTELVORLAGE;
 import static java.util.Locale.GERMANY;
 
 public class EinzelerstellungReader {
 
-    private final String pathTemplate = "C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Stundenzettel\\Stundenzettel_Vorlage.xlsx";
+    private final String pathTemplate = PATH_DATEI_STUNDENZETTELVORLAGE;
     private final String BUNDESLAND = "he";
 
     private final String abrechnungsmonat;
@@ -37,7 +39,7 @@ public class EinzelerstellungReader {
         this.name = name;
     }
 
-    public void writeToExcelEinzelerstellung() {
+    public void writeToExcelEinzelerstellung(String outputPath, String lohn) {
         try {
             InputStream inputStream = new FileInputStream(pathTemplate);
             Workbook workbook = WorkbookFactory.create(inputStream);
@@ -96,10 +98,10 @@ public class EinzelerstellungReader {
             }
 
             double svBrutto = Double.parseDouble(this.svBrutto.replace(",", "."));
-            double stundenlohn = 12;
+            double stundenlohn = Double.parseDouble(lohn);
             double stundensatz = svBrutto / stundenlohn;
             double arbeitstage = stundensatz / 2.5;
-            int gerundeteArbeitstage = (int) Math.ceil(arbeitstage);
+            int gerundeteArbeitstage = (int) Math.round(arbeitstage);
 
             //Wir erstellen ein Array mit den Arbeitszeiten
             double[] arbeitszeiten = generateRandomNumbers(gerundeteArbeitstage, 2.5, 1);
@@ -118,7 +120,7 @@ public class EinzelerstellungReader {
             String[] werktage = new String[arbeitszeitenCells.size()];
             Random randomNumberGen = new Random();
             int randomNumber;
-            DecimalFormat decimalFormat = new DecimalFormat("###.##");
+            DecimalFormat decimalFormat = new DecimalFormat("###.#");
 
             for (int j = 0; j < arbeitszeiten.length; j++) {
                 randomNumber = randomNumberGen.nextInt(arbeitszeitenCells.size() - 1);
@@ -130,7 +132,8 @@ public class EinzelerstellungReader {
 
             //Wir befüllen die Spalten, Dezimal, Arbeitszeit Netto, Aufgezeichnet am, und Arbeitszeit
             String hourMinutes;
-            int insgMinuten, stunden, minuten;
+            double insgMinuten, minuten;
+            int stunden;
             for (int i = 0; i < arbeitszeitenCells.size(); i++) {
                 hourMinutes = "";
                 if (werktage[i] != null) {
@@ -146,13 +149,13 @@ public class EinzelerstellungReader {
                     arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() + 2).setCellValue(aufgezeichnetAm);
                     //Wir befüllen die Spalte "Arbeitszeit"
                     String temp = werktage[i].replace(",", ".");
-                    insgMinuten = (int) (Double.parseDouble(temp) * 60);
+                    insgMinuten = Double.parseDouble(temp) * 60;
                     stunden = (int) Double.parseDouble(temp);
                     minuten = insgMinuten % 60;
 
                     hourMinutes = hourMinutes + "0" + stunden + ":";
-                    if (minuten >= 10) hourMinutes += minuten;
-                    else hourMinutes += "0" + minuten;
+                    if (minuten >= 10) hourMinutes += String.valueOf(minuten).split("\\.")[0];
+                    else hourMinutes += "0" + String.valueOf(minuten).split("\\.")[0];
 
                     arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() - 1).setCellValue(hourMinutes);
 
@@ -163,10 +166,13 @@ public class EinzelerstellungReader {
                     arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() + 2).setCellValue("");
                 }
             }
+//            try (FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents\\test.xlsx")) {
+//                workbook.write(fileOutputStream);
+//            }
 
-            try (FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents\\test.xlsx")) {
-                workbook.write(fileOutputStream);
-            }
+                PdfGenerator pdfGenerator = new PdfGenerator();
+                pdfGenerator.createPdf(workbook, outputPath, abrechnungsmonat.replace("/", "-"));
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -181,7 +187,9 @@ public class EinzelerstellungReader {
             do {
                 randomValue = normalDistribution.sample();
             } while (randomValue < 0.25 || randomValue > 4);
-            result[i] = randomValue;
+
+            DecimalFormat decimalFormat = new DecimalFormat("###.#");
+            result[i] = Double.parseDouble(decimalFormat.format(randomValue).replace(",", "."));
         }
         return result;
     }

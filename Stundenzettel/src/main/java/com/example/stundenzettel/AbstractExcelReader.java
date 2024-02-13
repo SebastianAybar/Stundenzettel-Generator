@@ -13,8 +13,8 @@ public class AbstractExcelReader {
         this.inputPath = inputPath;
     }
 
-    public List<List<MitarbeiterMonat>> getListOfAbrechnungsmonate() {
-        readAllRows();
+    public List<List<MitarbeiterMonat>> getListOfAbrechnungsmonate(String stundenlohn) {
+        readAllRows(stundenlohn);
 
         // Wenn in der Excel keine Personen mit Gehalt existieren, ist die Liste leer.
         // Es werden also keine PDF-Dateien erstellt
@@ -43,7 +43,7 @@ public class AbstractExcelReader {
         return jahresliste;
     }
 
-    public void readAllRows() {
+    public void readAllRows(String stundenlohn) {
         try (FileInputStream inputStream = new FileInputStream(inputPath)) {
             Workbook workbook = WorkbookFactory.create(inputStream);
             Sheet sheet = workbook.getSheetAt(0);
@@ -75,7 +75,7 @@ public class AbstractExcelReader {
                 mitarbeiterMonat.setNatKennzeichen(getCellAsString(row.getCell(19)));
                 mitarbeiterMonat.setMidijobregelung(getCellAsString(row.getCell(20)));*/
                 try {
-                    if (Double.parseDouble(mitarbeiterMonat.getSvBrutto()) > 0) {
+                    if (Double.parseDouble(mitarbeiterMonat.getSvBrutto()) >= Double.parseDouble(stundenlohn)) {
                         listMitarbeiterMonat.add(mitarbeiterMonat);
                         System.out.println("Added Person: " + mitarbeiterMonat.getNachnameVorname());
                     }

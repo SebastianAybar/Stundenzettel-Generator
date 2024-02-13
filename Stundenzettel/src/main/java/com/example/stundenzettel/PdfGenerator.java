@@ -20,7 +20,7 @@ import static com.example.stundenzettel.Attribute.*;
 
 public class PdfGenerator {
 
-    public void createPdf(Workbook workbook, String outputPath, String filename, int counter) {
+    public void createPdf(Workbook workbook, String outputPath, String filename) {
         try {
 
             // PDF-Dokument erstellen und öffnen

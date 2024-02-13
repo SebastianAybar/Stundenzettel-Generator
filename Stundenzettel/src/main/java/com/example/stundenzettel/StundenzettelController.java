@@ -167,24 +167,30 @@ public class StundenzettelController implements Initializable {
                 saveStundenlohnToDatei(textFieldStundenlohn.getText());
 
                 // Prüfung: Feld PathInput: try/catch ist gleichzeitig Prüfung für inputPathField (richtiges Dateiformat oder nicht)
-                try {
-                    abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
-                    List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate();
-                    defaultFormatExcelDatei();
+                File directory = new File(outputPathTextField.getText());
+                if (directory.exists() && directory.isDirectory()) {
+                    try {
+                        abstractExcelReader = new AbstractExcelReader(inputPathTextField.getText());
+                        List<List<MitarbeiterMonat>> jahresliste = abstractExcelReader.getListOfAbrechnungsmonate(textFieldStundenlohn.getText().replace(",", "."));
+                        defaultFormatExcelDatei();
 
-                    if (jahresliste.isEmpty()) {
-                        fehlgeschlageneSchlussnachricht();
-                        return;
-                    }
-
-                    abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
-                    abstractExcelWriter.writeToExcel(jahresliste, Double.parseDouble(textFieldStundenlohn.getText().replace(",", ".")));
-                    erfolgreicheSchlussnachricht();
-                } catch (Exception e) {
+                        if (jahresliste.isEmpty()) {
+                            fehlgeschlageneSchlussnachricht();
+                            return;
+                        }
+                        abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
+                        abstractExcelWriter.writeToExcel(jahresliste, Double.parseDouble(textFieldStundenlohn.getText().replace(",", ".")));
+                        erfolgreicheSchlussnachricht();
+                    } catch (Exception e) {
 //                    e.printStackTrace();
-                    System.out.println("Falsches Format der Excel-Datei");
-                    falschesFormatExcelDatei();
+                        System.out.println("Falsches Format der Excel-Datei");
+                        falschesFormatExcelDatei();
+                    }
+                } else {
+                    System.out.println("Ist kein directory");
+                    falscherPathOutput();
                 }
+
             }
 
         } else if (isEinzelerstellungClicked) {
@@ -200,11 +206,25 @@ public class StundenzettelController implements Initializable {
              *
              * */
 
+            defaultSchlussnachricht();
+
             boolean isFeldAbrechnungsmonatGueltig = false;
             boolean isFeldSvBruttoGueltig = false;
             boolean isFeldMitarbeiternummerGueltig = false;
             boolean isFeldNameGueltig = false;
             boolean isFeldStundenlohnGueltig = false;
+            boolean isFeldPathOutputGueltig = false;
+
+            // Prüfung: Feld Stundenlohn
+            isFeldStundenlohnGueltig = checkFieldStundenlohn();
+
+            // Prüfung: Feld PathOutput
+            if (!outputPathTextField.getText().isEmpty()) {
+                defaultPathOutput();
+                isFeldPathOutputGueltig = true;
+            } else {
+                falscherPathOutput();
+            }
 
             // Prüfung: Feld Mitarbeiternummer
             if (!textFieldMitarbeiternummer.getText().isEmpty()) {
@@ -221,6 +241,7 @@ public class StundenzettelController implements Initializable {
             } else {
                 nameEmpty();
             }
+
 
             // Prüfung: Feld Abrechnungsmonat
             if (isValidDateFormat(textFieldAbrechnungsmonat.getText())) {
@@ -251,14 +272,25 @@ public class StundenzettelController implements Initializable {
                 falschesFormatSvBrutto();
             }
 
-            // Prüfung: Feld Stundenlohn
-            isFeldStundenlohnGueltig = checkFieldStundenlohn();
-
 
             if (isFeldAbrechnungsmonatGueltig && isFeldSvBruttoGueltig && isFeldNameGueltig && isFeldMitarbeiternummerGueltig && isFeldStundenlohnGueltig) {
-                einzelerstellungReader = new EinzelerstellungReader(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
-                einzelerstellungReader.writeToExcelEinzelerstellung();
+                saveStundenlohnToDatei(textFieldStundenlohn.getText());
+                if (Double.parseDouble(textFieldSvBrutto.getText()) >= Double.parseDouble(textFieldStundenlohn.getText())) {
+                    File directory = new File(outputPathTextField.getText());
+                    if (directory.exists() && directory.isDirectory()) {
+                        einzelerstellungReader = new EinzelerstellungReader(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
+                        einzelerstellungReader.writeToExcelEinzelerstellung(outputPathTextField.getText(), textFieldStundenlohn.getText());
+                        erfolgreicheSchlussnachricht();
+                    } else {
+                        System.out.println("Ist kein directory");
+                        falscherPathOutput();
+                    }
+                } else {
+                    falschesFormatSvBrutto();
+                    fehlgeschlageneSchlussnachricht();
+                }
             }
+
         }
     }
 
@@ -269,15 +301,27 @@ public class StundenzettelController implements Initializable {
 
         isEinzelerstellungClicked = true;
         isExcelListeClicked = false;
+
+        lblFalscherPathOutput.setVisible(false);
+        lblDateiNichtAkzeptiert.setVisible(false);
+
+        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        inputPathTextField.setBorder(border);
+        inputPathTextField.setPromptText("Hier können Sie den Pfad der Excel-Liste eingeben.");
+        outputPathTextField.setBorder(border);
     }
 
     @FXML
     protected void excelList() {
+
+
         hboxExcelListeAnsicht.setVisible(true);
         hboxEinzelerstellung.setVisible(false);
 
         isExcelListeClicked = true;
         isEinzelerstellungClicked = false;
+
+        defaultPathOutput();
 
         //Wenn Excel Liste angeklickt wird sollen alle Einträge aus Einzelerstellung entfernt werden
         textFieldAbrechnungsmonat.setText("");
@@ -317,16 +361,14 @@ public class StundenzettelController implements Initializable {
                 Files.createFile(path);
                 System.out.println("Neue Datei erstellt in: " + PATH_DATEI_STUNDENLOHN);
             } catch (Exception e) {
-                System.out.println("Stundenlohn Datei konnte nicht im Verzeichnis " + PATH_DATEI_STUNDENLOHN +
-                        " erstellt werden");
+                System.out.println("Stundenlohn Datei konnte nicht im Verzeichnis " + PATH_DATEI_STUNDENLOHN + " erstellt werden");
             }
 
             try (PrintWriter printWriter = new PrintWriter(new FileOutputStream(PATH_DATEI_STUNDENLOHN))) {
                 printWriter.println(stundenlohn);
                 System.out.println("Wert >" + stundenlohn + "< in die neue Datei geschrieben");
             } catch (IOException e) {
-                System.out.println("In die Stundenlohn Datei im Verzeichnis " + PATH_DATEI_STUNDENLOHN +
-                        " konnte nicht reingeschrieben werden, weil sie nicht existiert");
+                System.out.println("In die Stundenlohn Datei im Verzeichnis " + PATH_DATEI_STUNDENLOHN + " konnte nicht reingeschrieben werden, weil sie nicht existiert");
             }
 
         } else {
@@ -348,16 +390,14 @@ public class StundenzettelController implements Initializable {
         Path path = Paths.get(PATH_DATEI_STUNDENLOHN);
 
         if (!Files.exists(path)) {
-            System.out.println("Es gibt die Stundenlohn Datei nicht. Der Wert " + stundenlohn +
-                    " kann also nicht gespeichert werden und wird verworfen");
+            System.out.println("Es gibt die Stundenlohn Datei nicht. Der Wert " + stundenlohn + " kann also nicht gespeichert werden und wird verworfen");
         } else {
             System.out.println("Datei zum speichern des Wertes gefunden!");
             try (PrintWriter printWriter = new PrintWriter(new FileOutputStream(PATH_DATEI_STUNDENLOHN))) {
                 printWriter.println(stundenlohn.trim());
                 System.out.println("Wert >" + stundenlohn + "< in die existierende Stundenlohn Datei geschrieben");
             } catch (IOException e) {
-                System.out.println("In die Stundenlohn Datei im Verzeichnis " + PATH_DATEI_STUNDENLOHN +
-                        " konnte nicht reingeschrieben werden (Problem)");
+                System.out.println("In die Stundenlohn Datei im Verzeichnis " + PATH_DATEI_STUNDENLOHN + " konnte nicht reingeschrieben werden (Problem)");
             }
         }
     }
@@ -463,7 +503,7 @@ public class StundenzettelController implements Initializable {
         inputPathTextField.setText("");
         Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
         inputPathTextField.setBorder(border);
-        lblDateiNichtAkzeptiert.setText("Die Inhalte der Datei konnten teilweise oder gar nicht gelesen werden");
+        lblDateiNichtAkzeptiert.setText("ungültige Eingabe");
         lblDateiNichtAkzeptiert.setVisible(true);
     }
 
@@ -477,7 +517,7 @@ public class StundenzettelController implements Initializable {
         inputPathTextField.setText("");
         Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
         inputPathTextField.setBorder(border);
-        lblDateiNichtAkzeptiert.setText("Ungültige Eingabe");
+        lblDateiNichtAkzeptiert.setText("ungültige Eingabe");
         lblDateiNichtAkzeptiert.setVisible(true);
     }
 
@@ -501,7 +541,7 @@ public class StundenzettelController implements Initializable {
     }
 
     protected void fehlgeschlageneSchlussnachricht() {
-        lblSchlussnachricht.setText("Es wurden keine Personen mit Gehälter gefunden");
+        lblSchlussnachricht.setText("Der Mitarbeiter hat weniger als 1 Stunde gearbeitet");
         lblSchlussnachricht.setTextFill(Color.RED);
         lblSchlussnachricht.setVisible(true);
     }
