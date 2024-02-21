@@ -124,12 +124,23 @@ public class AbstractExcelWriter {
                     //Wir erstellen ein Array mit den normalverteilten Arbeitszeiten
                     double svBrutto = Double.parseDouble(monatsliste.get(i).getSvBrutto().replace(",", "."));
                     double stundensatz = svBrutto / stundenlohn;
+
                     double meanProportionPerEuro = 2.5 / 520;
-                    double totalMean = meanProportionPerEuro * svBrutto;
+                    double totalMean;
+
+                    if(svBrutto <= 520) {
+                        totalMean = 2.5;
+                    } else {
+                        totalMean = meanProportionPerEuro * svBrutto;
+                    }
+
                     double arbeitstage = stundensatz / totalMean;
                     int gerundeteArbeitstage = (int) Math.round(arbeitstage);
 
                     System.out.println("stundensatz: " + stundensatz);
+
+                    if (gerundeteArbeitstage == 0) gerundeteArbeitstage = 1;
+
 
                     double gerundeterStundensatz = stundensatz * 10;
                     gerundeterStundensatz = Math.round(gerundeterStundensatz);

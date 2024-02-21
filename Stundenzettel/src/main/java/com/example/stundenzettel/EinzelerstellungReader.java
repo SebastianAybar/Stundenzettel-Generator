@@ -28,7 +28,7 @@ import static java.util.Locale.GERMANY;
 
 public class EinzelerstellungReader {
 
-//    private final String pathTemplate = PATH_DATEI_STUNDENZETTELVORLAGE;
+    //    private final String pathTemplate = PATH_DATEI_STUNDENZETTELVORLAGE;
     private final String BUNDESLAND = "he";
 
     private final String abrechnungsmonat;
@@ -124,11 +124,20 @@ public class EinzelerstellungReader {
             double svBrutto = Double.parseDouble(this.svBrutto.replace(",", "."));
             double stundenlohn = Double.parseDouble(lohn.replace(",", "."));
             double stundensatz = svBrutto / stundenlohn;
+
             double meanProportionPerEuro = 2.5 / 520;
-            double totalMean = meanProportionPerEuro * svBrutto;
+            double totalMean;
+
+            if(svBrutto <= 520) {
+                totalMean = 2.5;
+            } else {
+                totalMean = meanProportionPerEuro * svBrutto;
+            }
+
             double arbeitstage = stundensatz / totalMean;
             int gerundeteArbeitstage = (int) Math.round(arbeitstage);
             System.out.println("stundensatz: " + stundensatz);
+            if (gerundeteArbeitstage == 0) gerundeteArbeitstage = 1;
 
             double gerundeterStundensatz = stundensatz * 10;
             gerundeterStundensatz = Math.round(gerundeterStundensatz);
@@ -185,8 +194,8 @@ public class EinzelerstellungReader {
 
             double zaahl = 0;
             System.out.println(Arrays.asList(werktage));
-            for(String werktag : werktage) {
-                if(werktag != null) System.out.println(zaahl+= Double.parseDouble(werktag.replace(",",".")));
+            for (String werktag : werktage) {
+                if (werktag != null) System.out.println(zaahl += Double.parseDouble(werktag.replace(",", ".")));
             }
             System.out.println(zaahl);
             System.out.println(">> " + tempcounter + " <<");
@@ -318,7 +327,7 @@ public class EinzelerstellungReader {
         CellStyle freierTagStyleFuerDatum = workbook.createCellStyle();
         freierTagStyle.cloneStyleFrom(originalStyle);
 
-        freierTagStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        freierTagStyle.setFillPattern(FillPatternType.BRICKS);
         freierTagStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         freierTagStyle.setBorderBottom(BorderStyle.THIN);
         freierTagStyle.setBorderLeft(BorderStyle.THIN);
