@@ -266,21 +266,20 @@ public class StundenzettelController implements Initializable {
                 } else {
                     falschesFormatSvBrutto();
                 }
-            } catch (NumberFormatException nfe) {
-                falschesFormatSvBrutto();
-            } catch (NullPointerException npe) {
+            } catch (NumberFormatException | NullPointerException nfe) {
                 falschesFormatSvBrutto();
             }
 
 
             if (isFeldAbrechnungsmonatGueltig && isFeldSvBruttoGueltig && isFeldNameGueltig && isFeldMitarbeiternummerGueltig && isFeldStundenlohnGueltig) {
                 saveStundenlohnToDatei(textFieldStundenlohn.getText());
-                if (Double.parseDouble(textFieldSvBrutto.getText()) >= Double.parseDouble(textFieldStundenlohn.getText())) {
+                if (Double.parseDouble(textFieldSvBrutto.getText().replace(",", ".")) >= Double.parseDouble(textFieldStundenlohn.getText().replace(",", "."))) {
                     File directory = new File(outputPathTextField.getText());
                     if (directory.exists() && directory.isDirectory()) {
+                        isErrorDisplayed = false;
                         einzelerstellungReader = new EinzelerstellungReader(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
                         einzelerstellungReader.writeToExcelEinzelerstellung(outputPathTextField.getText(), textFieldStundenlohn.getText());
-                        erfolgreicheSchlussnachricht();
+                        if(!isErrorDisplayed) erfolgreicheSchlussnachricht();
                     } else {
                         System.out.println("Ist kein directory");
                         falscherPathOutput();
@@ -558,11 +557,14 @@ public class StundenzettelController implements Initializable {
         lblSchlussnachricht.setVisible(false);
     }
 
-    private void displayErrorInGui(String message) {
+
+    private static boolean isErrorDisplayed = false;
+    public static void displayErrorInGui(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
+        alert.setTitle("Hinweis");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+        isErrorDisplayed = true;
     }
 }
