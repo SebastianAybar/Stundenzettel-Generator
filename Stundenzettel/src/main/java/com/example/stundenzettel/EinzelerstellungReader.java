@@ -10,6 +10,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -24,7 +28,7 @@ import static java.util.Locale.GERMANY;
 
 public class EinzelerstellungReader {
 
-    private final String pathTemplate = PATH_DATEI_STUNDENZETTELVORLAGE;
+//    private final String pathTemplate = PATH_DATEI_STUNDENZETTELVORLAGE;
     private final String BUNDESLAND = "he";
 
     private final String abrechnungsmonat;
@@ -41,7 +45,27 @@ public class EinzelerstellungReader {
 
     public void writeToExcelEinzelerstellung(String outputPath, String lohn) {
         try {
-            InputStream inputStream = new FileInputStream(pathTemplate);
+            String resourceFilePath = "/Stundenzettel_Vorlage.xlsx";
+            InputStream resourceStream = AbstractExcelWriter.class.getResourceAsStream(resourceFilePath);
+
+            if (resourceStream == null) {
+                System.err.println("File not found in resources: " + resourceFilePath);
+                return;
+            }
+
+            // Create the destination path in the home directory
+            Path destinationPath = Paths.get(PATH_DATEI_STUNDENZETTELVORLAGE);
+
+            if (!Files.exists(destinationPath)) {
+                // Copy the file from resources to the home directory
+                Files.copy(resourceStream, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("Stundenzettel_Vorlage wurde kopiert zu" + destinationPath);
+            } else {
+                System.out.println("Vorlage existiert bereits im Verzeichnis: " + PATH_DATEI_STUNDENZETTELVORLAGE);
+            }
+
+
+            InputStream inputStream = new FileInputStream(PATH_DATEI_STUNDENZETTELVORLAGE);
             Workbook workbook = WorkbookFactory.create(inputStream);
             Sheet currentSheet = workbook.getSheetAt(0);
 
@@ -116,7 +140,7 @@ public class EinzelerstellungReader {
             // Prüfen, ob die Anzahl der Arbeitstage, die "gearbeitet wurden" auch in den Monat passen
             // Das ist nicht der Fall, wenn bspw. der Stundenlohn im Vergleich zum svBrutto sehr niedrig ist und die Person hätte zu viele Stunden bzw. Tage arbeiten müssen, um das zu erreichen
             if (gerundeteArbeitstage > arbeitszeitenCells.size()) {
-                StundenzettelController.displayErrorInGui("saofin");
+                StundenzettelController.displayErrorInGui("Das Gehalt übersteigt die mögliche Monatsarbeitszeit im Verhältnis zum angegebenen Stundenlohn ");
                 return;
             }
 
@@ -216,9 +240,9 @@ public class EinzelerstellungReader {
             } catch (NumberFormatException e) {
                 System.out.println("Fehler");
             }
-            try (FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\MM\\Downloads\\test\\test.xlsx")) {
-                workbook.write(fileOutputStream);
-            }
+//            try (FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\MM\\Downloads\\test\\test.xlsx")) {
+//                workbook.write(fileOutputStream);
+//            }
 
             PdfGenerator pdfGenerator = new PdfGenerator();
             pdfGenerator.createPdf(workbook, outputPath, abrechnungsmonat.replace("/", "-"));
@@ -240,7 +264,6 @@ public class EinzelerstellungReader {
 
             DecimalFormat decimalFormat = new DecimalFormat("###.#");
             result[i] = Double.parseDouble(decimalFormat.format(randomValue).replace(",", "."));
-//            result[i] = randomValue;
         }
         return result;
     }
