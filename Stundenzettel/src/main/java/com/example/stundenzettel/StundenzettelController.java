@@ -103,6 +103,8 @@ public class StundenzettelController implements Initializable {
     private Label lblFalscherPathOutput;
     @FXML
     private Label lblSchlussnachricht;
+    @FXML
+    private CheckBox checkboxErsetzen;
 
     @FXML
     protected void chooseFile() {
@@ -128,15 +130,6 @@ public class StundenzettelController implements Initializable {
 
     @FXML
     protected void transformExcel() {
-//        inputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents\\Mini-Job geringfügig Beschäftigte_01_10_2023_LV_Testnamen.xlsx");
-//        outputPathTextField.setText("C:\\Users\\sebas\\OneDrive\\Dokumente\\GitHub\\Stundenzettel-Generator\\Documents");
-//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\bsp.xlsx");
-//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\einEintrag.xlsx");
-//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\einMonat.xlsx");
-//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\mitLuecke.xlsx");
-//        inputPathTextField.setText("C:\\Users\\MM\\Downloads\\ifi_USB-Stick\\komplettFalschesFormat.xlsx");
-
-//        outputPathTextField.setText("C:\\Users\\MM\\Downloads\\test");
 
         if (isExcelListeClicked) {
             defaultSchlussnachricht();
@@ -278,7 +271,7 @@ public class StundenzettelController implements Initializable {
                     if (directory.exists() && directory.isDirectory()) {
                         isErrorDisplayed = false;
                         einzelerstellungReader = new EinzelerstellungReader(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
-                        einzelerstellungReader.writeToExcelEinzelerstellung(outputPathTextField.getText(), textFieldStundenlohn.getText());
+                        einzelerstellungReader.writeToExcelEinzelerstellung(outputPathTextField.getText(), textFieldStundenlohn.getText(), checkboxErsetzen.isSelected());
                         if(!isErrorDisplayed) erfolgreicheSchlussnachricht();
                     } else {
                         System.out.println("Ist kein directory");

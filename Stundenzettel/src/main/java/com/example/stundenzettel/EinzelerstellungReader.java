@@ -3,13 +3,12 @@ package com.example.stundenzettel;
 import de.focus_shift.jollyday.core.Holiday;
 import de.focus_shift.jollyday.core.HolidayManager;
 import de.focus_shift.jollyday.core.ManagerParameters;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.poi.ss.usermodel.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +22,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.*;
 
+import static com.example.stundenzettel.Attribute.DOCUMENT_FILE_SUFFIX;
 import static com.example.stundenzettel.Attribute.PATH_DATEI_STUNDENZETTELVORLAGE;
 import static java.util.Locale.GERMANY;
 
@@ -43,7 +43,7 @@ public class EinzelerstellungReader {
         this.name = name;
     }
 
-    public void writeToExcelEinzelerstellung(String outputPath, String lohn) {
+    public void writeToExcelEinzelerstellung(String outputPath, String lohn, boolean isErsetzenSelected) {
         try {
             String resourceFilePath = "/Stundenzettel_Vorlage.xlsx";
             InputStream resourceStream = AbstractExcelWriter.class.getResourceAsStream(resourceFilePath);
@@ -253,8 +253,49 @@ public class EinzelerstellungReader {
 //                workbook.write(fileOutputStream);
 //            }
 
-            PdfGenerator pdfGenerator = new PdfGenerator();
-            pdfGenerator.createPdf(workbook, outputPath, abrechnungsmonat.replace("/", "-"));
+            String fileName = abrechnungsmonat.replace("/", "-");
+            String filePathWithName = outputPath + "\\" + fileName + DOCUMENT_FILE_SUFFIX;
+            if (!isErsetzenSelected) {
+                File pdfFile = new File(filePathWithName);
+                if (pdfFile.exists()) {
+//                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//                    alert.setTitle("Gleichnamige Datei gefunden");
+//                    alert.setHeaderText("Die Datei \"" + fileName+DOCUMENT_FILE_SUFFIX + "\" existiert bereits in dem Pfad \"" + outputPath + "\". Soll die Datei überschrieben werden?");
+//                    alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+//
+//                    alert.showAndWait().ifPresent(response -> {
+//                        if (response == ButtonType.YES) {
+//                            // User clicked Yes, overwrite the file
+//                            PdfGenerator pdfGenerator = new PdfGenerator();
+//                            pdfGenerator.createPdf(workbook, outputPath, fileName);
+//                            System.out.println("PDF created (overwrite)");
+//                        } else {
+//                            if (response == ButtonType.NO) {
+//                                // if user presses No, nothing happens
+//                            }
+//                        }
+//                    });
+
+                    int count = 0;
+
+                    File newFile;
+                    do {
+                        count++;
+                        String newFileName = outputPath + "\\" + fileName + "_" + count + DOCUMENT_FILE_SUFFIX;
+                        newFile = new File(newFileName);
+                    } while (newFile.exists());
+
+                    PdfGenerator pdfGenerator = new PdfGenerator();
+                    pdfGenerator.createPdf(workbook, outputPath, fileName + "_" + count);
+                    System.out.println("PDF file created: " + newFile.getAbsolutePath());
+                } else {
+                    PdfGenerator pdfGenerator = new PdfGenerator();
+                    pdfGenerator.createPdf(workbook, outputPath, fileName);
+                }
+            } else {
+                PdfGenerator pdfGenerator = new PdfGenerator();
+                pdfGenerator.createPdf(workbook, outputPath, fileName);
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
