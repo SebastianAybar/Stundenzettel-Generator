@@ -230,7 +230,8 @@ public class EinzelerstellungReader {
                         sekunden = Double.parseDouble("0." + String.valueOf(insgMinuten).split("\\.")[1]);
                         sekunden = sekunden * 60;
 
-                        hourMinutes = hourMinutes + "0" + stunden + ":";
+                        if (stunden >= 10) hourMinutes += stunden + ":";
+                        else hourMinutes += "0" + stunden + ":";
                         if (minuten >= 10) hourMinutes += String.valueOf(minuten).split("\\.")[0];
                         else hourMinutes += "0" + String.valueOf(minuten).split("\\.")[0];
                         if (sekunden >= 10) hourMinutes += ":" + (int) sekunden;

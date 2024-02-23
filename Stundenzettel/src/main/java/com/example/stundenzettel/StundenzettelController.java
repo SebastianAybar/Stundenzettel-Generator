@@ -172,7 +172,7 @@ public class StundenzettelController implements Initializable {
                             return;
                         }
                         abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
-                        abstractExcelWriter.writeToExcel(jahresliste, Double.parseDouble(textFieldStundenlohn.getText().replace(",", ".")));
+                        abstractExcelWriter.writeToExcel(jahresliste, Double.parseDouble(textFieldStundenlohn.getText().replace(",", ".")), checkboxErsetzen.isSelected());
                         erfolgreicheSchlussnachricht();
                     } catch (Exception e) {
 //                    e.printStackTrace();
