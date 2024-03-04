@@ -120,7 +120,7 @@
                     </Button>
                 </HBox>
                 <HBox alignment="TOP_RIGHT" prefHeight="17.0" prefWidth="525.0" VBox.vgrow="ALWAYS">
-                    <CheckBox fx:id="checkboxErsetzen" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Datei ersetzen?">
+                    <CheckBox fx:id="checkboxErsetzen" alignment="CENTER_RIGHT" mnemonicParsing="false" selected="true" text="Datei ersetzen?">
                   <font>
                      <Font name="System Bold" size="12.0" />
                   </font></CheckBox>

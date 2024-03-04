@@ -38,7 +38,7 @@ public class AbstractExcelWriter {
         this.outputPath = outputPath;
     }
 
-    public void writeToExcel(List<List<MitarbeiterMonat>> jahresliste, double stundenlohn) {
+    public void writeToExcel(List<List<MitarbeiterMonat>> jahresliste, double stundenlohn, boolean isErsetzenSelected) {
         int counter = 1;
         for (List<MitarbeiterMonat> monatsliste : jahresliste) {
             Workbook workbook = null;
@@ -232,7 +232,8 @@ public class AbstractExcelWriter {
                                 sekunden = Double.parseDouble("0." + String.valueOf(insgMinuten).split("\\.")[1]);
                                 sekunden = sekunden * 60;
 
-                                hourMinutes = hourMinutes + "0" + stunden + ":";
+                                if (stunden >= 10) hourMinutes += stunden + ":";
+                                else hourMinutes += "0" + stunden + ":";
                                 if (minuten >= 10) hourMinutes += String.valueOf(minuten).split("\\.")[0];
                                 else hourMinutes += "0" + String.valueOf(minuten).split("\\.")[0];
                                 if (sekunden >= 10) hourMinutes += ":" + (int) sekunden;
@@ -262,9 +263,60 @@ public class AbstractExcelWriter {
 //                    workbook.write(fileOutputStream);
 //                }
 
-                // PDF-Output-Dateien
-                PdfGenerator pdfGenerator = new PdfGenerator();
-                pdfGenerator.createPdf(workbook, outputPath, monatsliste.get(0).getAbrechnungsmonat().replace("/", "-"));
+
+
+                String fileName = monatsliste.get(0).getAbrechnungsmonat().replace("/", "-");
+                String filePathWithName = outputPath + "\\" + fileName + DOCUMENT_FILE_SUFFIX;
+
+                if (!isErsetzenSelected) {
+                    File pdfFile = new File(filePathWithName);
+                    if (pdfFile.exists()) {
+//                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//                    alert.setTitle("Gleichnamige Datei gefunden");
+//                    alert.setHeaderText("Die Datei \"" + fileName+DOCUMENT_FILE_SUFFIX + "\" existiert bereits in dem Pfad \"" + outputPath + "\". Soll die Datei überschrieben werden?");
+//                    alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+//
+//                    alert.showAndWait().ifPresent(response -> {
+//                        if (response == ButtonType.YES) {
+//                            // User clicked Yes, overwrite the file
+//                            PdfGenerator pdfGenerator = new PdfGenerator();
+//                            pdfGenerator.createPdf(workbook, outputPath, fileName);
+//                            System.out.println("PDF created (overwrite)");
+//                        } else {
+//                            if (response == ButtonType.NO) {
+//                                // if user presses No, nothing happens
+//                            }
+//                        }
+//                    });
+
+                        int count = 0;
+
+                        File newFile;
+                        do {
+                            count++;
+                            String newFileName = outputPath + "\\" + fileName + "_" + count + DOCUMENT_FILE_SUFFIX;
+                            newFile = new File(newFileName);
+                        } while (newFile.exists());
+
+                        PdfGenerator pdfGenerator = new PdfGenerator();
+                        pdfGenerator.createPdf(workbook, outputPath, fileName + "_" + count);
+                        System.out.println("PDF file created: " + newFile.getAbsolutePath());
+                    } else {
+                        PdfGenerator pdfGenerator = new PdfGenerator();
+                        pdfGenerator.createPdf(workbook, outputPath, fileName);
+                    }
+                } else {
+                    PdfGenerator pdfGenerator = new PdfGenerator();
+                    pdfGenerator.createPdf(workbook, outputPath, fileName);
+                }
+
+////                 PDF-Output-Dateien
+//                PdfGenerator pdfGenerator = new PdfGenerator();
+//                pdfGenerator.createPdf(workbook, outputPath, monatsliste.get(0).getAbrechnungsmonat().replace("/", "-"));
+
+
+
+
             } catch (Exception e) {
                 System.out.println("EXCEPTION im Writer!");
                 e.printStackTrace();
