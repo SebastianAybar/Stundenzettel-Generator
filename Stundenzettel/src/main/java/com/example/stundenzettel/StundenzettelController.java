@@ -287,26 +287,29 @@ public class StundenzettelController implements Initializable {
     }
 
     @FXML
-    protected void einzerstellung() {
+    protected void einzelerstellung() {
         hboxExcelListeAnsicht.setVisible(false);
         hboxEinzelerstellung.setVisible(true);
 
         isEinzelerstellungClicked = true;
         isExcelListeClicked = false;
 
-        lblFalscherPathOutput.setVisible(false);
-        lblDateiNichtAkzeptiert.setVisible(false);
+        defaultPathInput();
+        defaultPathOutput();
 
-        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        inputPathTextField.setText("");
+
+        /*lblFalscherPathOutput.setVisible(false);
+        lblDateiNichtAkzeptiert.setVisible(false);*/
+
+        /*Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
         inputPathTextField.setBorder(border);
         inputPathTextField.setPromptText("Hier können Sie den Pfad der Excel-Liste eingeben.");
-        outputPathTextField.setBorder(border);
+        outputPathTextField.setBorder(border);*/
     }
 
     @FXML
     protected void excelList() {
-
-
         hboxExcelListeAnsicht.setVisible(true);
         hboxEinzelerstellung.setVisible(false);
 
@@ -315,28 +318,37 @@ public class StundenzettelController implements Initializable {
 
         defaultPathOutput();
 
-        //Wenn Excel Liste angeklickt wird sollen alle Einträge aus Einzelerstellung entfernt werden
+        defaultFormatAbrechnungsmonat();
+        defaultFormatSvBrutto();
+        defaultName();
+        defaultMitarbeiternummer();
+
+        textFieldMitarbeiternummer.setText("");
         textFieldAbrechnungsmonat.setText("");
+        textFieldName.setText("");
         textFieldSvBrutto.setText("");
+
+        /*textFieldSvBrutto.setText("");
         textFieldMitarbeiternummer.setText("");
         textFieldName.setText("");
         lblNameEmpty.setVisible(false);
         lblMitarbeiternummerEmpty.setVisible(false);
         lblFalschesFormatSvBrutto.setVisible(false);
         lblFalschesFormatAbrechnungsmonat.setVisible(false);
+
         Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
+        textFieldAbrechnungsmonat.setText("");
         textFieldAbrechnungsmonat.setBorder(border);
         textFieldAbrechnungsmonat.setPromptText("Format: yyyy/MM");
+
         textFieldSvBrutto.setBorder(border);
         textFieldMitarbeiternummer.setBorder(border);
-        textFieldName.setBorder(border);
-
+        textFieldName.setBorder(border);*/
     }
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         loadStundenlohnFromDatei();
     }
 
@@ -438,6 +450,7 @@ public class StundenzettelController implements Initializable {
     protected void defaultFormatAbrechnungsmonat() {
         Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
         textFieldAbrechnungsmonat.setBorder(border);
+        //textFieldAbrechnungsmonat.setText("");
         lblFalschesFormatAbrechnungsmonat.setVisible(false);
     }
 
@@ -451,6 +464,7 @@ public class StundenzettelController implements Initializable {
     protected void defaultFormatSvBrutto() {
         Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
         textFieldSvBrutto.setBorder(border);
+        //textFieldSvBrutto.setText("");
         lblFalschesFormatSvBrutto.setVisible(false);
     }
 
@@ -463,6 +477,7 @@ public class StundenzettelController implements Initializable {
     protected void defaultMitarbeiternummer() {
         Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
         textFieldMitarbeiternummer.setBorder(border);
+        //textFieldMitarbeiternummer.setText("");
         lblMitarbeiternummerEmpty.setVisible(false);
     }
 
@@ -475,6 +490,7 @@ public class StundenzettelController implements Initializable {
     protected void defaultName() {
         Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
         textFieldName.setBorder(border);
+        //textFieldName.setText("");
         lblNameEmpty.setVisible(false);
     }
 

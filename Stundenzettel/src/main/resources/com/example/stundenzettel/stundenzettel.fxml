@@ -16,7 +16,7 @@
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font></Button>
-                      <Button fx:id="einzelerstellung" mnemonicParsing="false" onAction="#einzerstellung" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Einzelerstellung">
+                      <Button fx:id="einzelerstellung" mnemonicParsing="false" onAction="#einzelerstellung" prefHeight="36.0" prefWidth="145.0" styleClass="btn-header" text="Einzelerstellung">
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font></Button>
@@ -156,7 +156,10 @@
             <Font name="System Italic" size="12.0" />
          </font>
       </Label>
-      <Label fx:id="lblFalschesFormatStundenlohn" layoutX="507.0" layoutY="45.0" text="ungültige Eingabe" textFill="RED" visible="false" />
+      <Label fx:id="lblFalschesFormatStundenlohn" layoutX="564.0" layoutY="24.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font></Label>
       <Label fx:id="lblDateiNichtAkzeptiert" layoutX="117.0" layoutY="128.0" prefHeight="17.0" prefWidth="416.0" text="Die Inhalte der Datei konnten teilweise oder gar nicht gelesen werden" textFill="#e10000" visible="false">
          <font>
             <Font name="System Italic" size="12.0" />
