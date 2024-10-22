@@ -99,7 +99,7 @@ public class Attribute {
     public static final Font TBL_STUNDEN_FETT_FONT = new Font(Font.FontFamily.HELVETICA, TBL_STUNDEN_FONT_SIZE, Font.BOLD);
     public static final int TBL_STUNDEN_PADDING = 3;
     public static final BaseColor FREIERTAG_COLOR = new BaseColor(192, 192, 192);
-    public static final String TBL_STUNDEN_SUMMEN_FORMAT = "###.#";
+    public static final String TBL_STUNDEN_SUMMEN_FORMAT = "###.##";
 
     // SONSTIGE
     public static final int CELL_BORDER_TRANSPARENT = 0;

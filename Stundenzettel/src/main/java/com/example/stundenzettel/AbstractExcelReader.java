@@ -43,6 +43,24 @@ public class AbstractExcelReader {
         return jahresliste;
     }
 
+//    public boolean checkColumns() {
+//        boolean spaltenanordnung = true;
+//        try (FileInputStream inputStream = new FileInputStream(inputPath)) {
+//            Workbook workbook = WorkbookFactory.create(inputStream);
+//            Sheet sheet = workbook.getSheetAt(0);
+//
+//            Row ueberschriftRow = sheet.getRow(0);
+//            String cellValue = getCellAsString(ueberschriftRow.getCell(3));
+//            if (!cellValue.equals("Abrechnungsmonat") || !cellValue.equals("abrechnungsmonat")) {
+//
+//            }
+//
+//        } catch (IOException e) {
+//            System.out.println("Error. Check code!");
+//        }
+//
+//    }
+
     public void readAllRows(String stundenlohn) {
         try (FileInputStream inputStream = new FileInputStream(inputPath)) {
             Workbook workbook = WorkbookFactory.create(inputStream);

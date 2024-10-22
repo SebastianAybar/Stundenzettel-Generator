@@ -24,7 +24,7 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" prefHeight="36.0" prefWidth="159.0" styleClass="hbox-hbox-header" HBox.hgrow="ALWAYS">
                <children>
-                      <Label fx:id="lblStundenlohn" alignment="TOP_RIGHT" prefHeight="17.0" prefWidth="92.0" text="Stundenlohn:">
+                      <Label fx:id="lblStundenlohn" alignment="TOP_RIGHT" prefHeight="17.0" prefWidth="92.0" text="Mindestlohn:">
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font></Label>
@@ -54,9 +54,9 @@
          <children>
             <VBox alignment="CENTER" prefHeight="60.0" prefWidth="308.0">
                <children>
-                  <HBox alignment="CENTER" prefHeight="67.0" prefWidth="314.0">
+                  <HBox alignment="CENTER" prefHeight="61.0" prefWidth="314.0">
                      <children>
-                        <Label fx:id="lblAbrechnungsmonat" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="119.0" text="Abrechnungsmonat: ">
+                        <Label fx:id="lblAbrechnungsmonat" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="120.0" text="Abrechnungsmonat: ">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
@@ -66,13 +66,13 @@
                            </font></TextField>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="59.0" prefWidth="186.0">
+                  <HBox alignment="CENTER" prefHeight="59.0" prefWidth="183.0">
                      <children>
                         <Label fx:id="lblMitarbeiternummer" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="120.0" text="Mitarbeiternummer: ">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
-                        <TextField fx:id="textFieldMitarbeiternummer" prefHeight="25.0" prefWidth="135.0" />
+                        <TextField fx:id="textFieldMitarbeiternummer" prefHeight="25.0" prefWidth="134.0" />
                      </children>
                   </HBox>
                </children>
@@ -136,12 +136,12 @@
                </font></Button>
             </children>
         </VBox>
-      <Label fx:id="lblFalschesFormatAbrechnungsmonat" layoutX="206.0" layoutY="59.0" prefHeight="16.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
+      <Label fx:id="lblFalschesFormatAbrechnungsmonat" layoutX="206.0" layoutY="57.0" prefHeight="16.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
          <font>
             <Font name="System Italic" size="12.0" />
          </font>
       </Label>
-      <Label fx:id="lblFalschesFormatSvBrutto" layoutX="466.0" layoutY="60.0" prefHeight="17.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
+      <Label fx:id="lblFalschesFormatSvBrutto" layoutX="466.0" layoutY="57.0" prefHeight="17.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
          <font>
             <Font name="System Italic" size="12.0" />
          </font>
@@ -151,7 +151,7 @@
             <Font name="System Italic" size="12.0" />
          </font>
       </Label>
-      <Label fx:id="lblNameEmpty" layoutX="442.0" layoutY="132.0" prefHeight="17.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
+      <Label fx:id="lblNameEmpty" layoutX="442.0" layoutY="133.0" prefHeight="17.0" prefWidth="100.0" text="ungültige Eingabe" textFill="#e10000" visible="false">
          <font>
             <Font name="System Italic" size="12.0" />
          </font>
@@ -171,7 +171,7 @@
          <opaqueInsets>
             <Insets top="2.0" />
          </opaqueInsets></Label>
-      <Label fx:id="lblSchlussnachricht" layoutX="221.0" layoutY="314.0" text="PDF-Dateien wurden erfolgreich generiert" textAlignment="CENTER" textFill="#00c300" visible="false">
+      <Label fx:id="lblSchlussnachricht" layoutX="221.0" layoutY="314.0" prefHeight="52.0" prefWidth="238.0" text="PDF-Dateien wurden erfolgreich generiert" textAlignment="CENTER" textFill="#00c300" visible="false">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>

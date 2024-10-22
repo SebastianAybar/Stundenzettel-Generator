@@ -27,7 +27,7 @@ public class StundenzettelController implements Initializable {
 
     private AbstractExcelReader abstractExcelReader;
     private AbstractExcelWriter abstractExcelWriter;
-    private EinzelerstellungReader einzelerstellungReader;
+    private EinzelerstellungWriter einzelerstellungReader;
     private boolean isExcelListeClicked = true;
     private boolean isEinzelerstellungClicked = false;
 
@@ -102,7 +102,7 @@ public class StundenzettelController implements Initializable {
     @FXML
     private Label lblFalscherPathOutput;
     @FXML
-    private Label lblSchlussnachricht;
+    private Label lblSchlussnachricht = new Label();
     @FXML
     private CheckBox checkboxErsetzen;
 
@@ -168,7 +168,7 @@ public class StundenzettelController implements Initializable {
                         defaultFormatExcelDatei();
 
                         if (jahresliste.isEmpty()) {
-                            fehlgeschlageneSchlussnachricht();
+                            fehlgeschlageneSchlussnachricht("Excel Liste ist ungültig.");
                             return;
                         }
                         abstractExcelWriter = new AbstractExcelWriter(outputPathTextField.getText());
@@ -254,8 +254,13 @@ public class StundenzettelController implements Initializable {
             try {
                 double svBrutto = Double.parseDouble(textFieldSvBrutto.getText().replace(",", "."));
                 if (svBrutto >= 0) {
-                    defaultFormatSvBrutto();
-                    isFeldSvBruttoGueltig = true;
+                     if (svBrutto <= 1600) {
+                         defaultFormatSvBrutto();
+                         isFeldSvBruttoGueltig = true;
+                     } else {
+                         falschesFormatSvBrutto();
+                         fehlgeschlageneSchlussnachricht("svBrutto zu hoch");
+                     }
                 } else {
                     falschesFormatSvBrutto();
                 }
@@ -270,7 +275,7 @@ public class StundenzettelController implements Initializable {
                     File directory = new File(outputPathTextField.getText());
                     if (directory.exists() && directory.isDirectory()) {
                         isErrorDisplayed = false;
-                        einzelerstellungReader = new EinzelerstellungReader(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
+                        einzelerstellungReader = new EinzelerstellungWriter(textFieldAbrechnungsmonat.getText(), textFieldMitarbeiternummer.getText(), textFieldSvBrutto.getText(), textFieldName.getText());
                         einzelerstellungReader.writeToExcelEinzelerstellung(outputPathTextField.getText(), textFieldStundenlohn.getText(), checkboxErsetzen.isSelected());
                         if(!isErrorDisplayed) erfolgreicheSchlussnachricht();
                     } else {
@@ -279,7 +284,7 @@ public class StundenzettelController implements Initializable {
                     }
                 } else {
                     falschesFormatSvBrutto();
-                    fehlgeschlageneSchlussnachricht();
+                    fehlgeschlageneSchlussnachricht("Der Mitarbeiter hat weniger als 1 Stunde gearbeitet.");
                 }
             }
 
@@ -288,6 +293,8 @@ public class StundenzettelController implements Initializable {
 
     @FXML
     protected void einzelerstellung() {
+
+
         hboxExcelListeAnsicht.setVisible(false);
         hboxEinzelerstellung.setVisible(true);
 
@@ -298,14 +305,6 @@ public class StundenzettelController implements Initializable {
         defaultPathOutput();
 
         inputPathTextField.setText("");
-
-        /*lblFalscherPathOutput.setVisible(false);
-        lblDateiNichtAkzeptiert.setVisible(false);*/
-
-        /*Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
-        inputPathTextField.setBorder(border);
-        inputPathTextField.setPromptText("Hier können Sie den Pfad der Excel-Liste eingeben.");
-        outputPathTextField.setBorder(border);*/
     }
 
     @FXML
@@ -327,23 +326,6 @@ public class StundenzettelController implements Initializable {
         textFieldAbrechnungsmonat.setText("");
         textFieldName.setText("");
         textFieldSvBrutto.setText("");
-
-        /*textFieldSvBrutto.setText("");
-        textFieldMitarbeiternummer.setText("");
-        textFieldName.setText("");
-        lblNameEmpty.setVisible(false);
-        lblMitarbeiternummerEmpty.setVisible(false);
-        lblFalschesFormatSvBrutto.setVisible(false);
-        lblFalschesFormatAbrechnungsmonat.setVisible(false);
-
-        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.NONE, null, new BorderWidths(1)));
-        textFieldAbrechnungsmonat.setText("");
-        textFieldAbrechnungsmonat.setBorder(border);
-        textFieldAbrechnungsmonat.setPromptText("Format: yyyy/MM");
-
-        textFieldSvBrutto.setBorder(border);
-        textFieldMitarbeiternummer.setBorder(border);
-        textFieldName.setBorder(border);*/
     }
 
 
@@ -455,7 +437,7 @@ public class StundenzettelController implements Initializable {
     }
 
     protected void falschesFormatSvBrutto() {
-        textFieldSvBrutto.setText("");
+//        textFieldSvBrutto.setText("");
         Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
         textFieldSvBrutto.setBorder(border);
         lblFalschesFormatSvBrutto.setVisible(true);
@@ -536,7 +518,7 @@ public class StundenzettelController implements Initializable {
     }
 
     protected void falscherPathOutput() {
-        outputPathTextField.setText("");
+//        outputPathTextField.setText("");
         Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
         outputPathTextField.setBorder(border);
         lblFalscherPathOutput.setVisible(true);
@@ -548,8 +530,8 @@ public class StundenzettelController implements Initializable {
         lblFalscherPathOutput.setVisible(false);
     }
 
-    protected void fehlgeschlageneSchlussnachricht() {
-        lblSchlussnachricht.setText("Der Mitarbeiter hat weniger als 1 Stunde gearbeitet");
+    protected void fehlgeschlageneSchlussnachricht(String schlussnachricht) {
+        lblSchlussnachricht.setText(schlussnachricht);
         lblSchlussnachricht.setTextFill(Color.RED);
         lblSchlussnachricht.setVisible(true);
     }

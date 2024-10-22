@@ -66,10 +66,11 @@ public class AbstractExcelWriter {
                 InputStream inputStream = new FileInputStream(PATH_DATEI_STUNDENZETTELVORLAGE);
 
                 workbook = WorkbookFactory.create(inputStream);
-                Sheet currentSheet = workbook.getSheetAt(0);
+                Sheet currentSheet;
+                int counterSheets = 0;
                 for (int i = 0; i < monatsliste.size(); i++) {
                     workbook.cloneSheet(0);
-                    currentSheet = workbook.getSheetAt(i + 1);
+                    currentSheet = workbook.getSheetAt(counterSheets + 1);
                     String[] datum = monatsliste.get(i).getAbrechnungsmonat().split("/");
                     List<LocalDate> datenDesMonats = getDatenDesMonats(datum);
                     List<Cell> arbeitszeitenCells = new ArrayList<>();
@@ -123,8 +124,16 @@ public class AbstractExcelWriter {
 
                     //Wir erstellen ein Array mit den normalverteilten Arbeitszeiten
                     double svBrutto = Double.parseDouble(monatsliste.get(i).getSvBrutto().replace(",", "."));
-                    double stundensatz = svBrutto / stundenlohn;
 
+                    if (svBrutto > 1600) {
+                        StundenzettelController.displayErrorInGui("Brutto von " + monatsliste.get(i).getNachnameVorname() + " war zu hoch.\nStundenzettel wurde übersprungen.");
+                        workbook.removeSheetAt(counterSheets + 1);
+                        continue;
+                    } else {
+                        counterSheets++;
+                    }
+
+                    double stundensatz = svBrutto / stundenlohn;
                     double meanProportionPerEuro = 2.5 / 520;
                     double totalMean;
 
@@ -142,12 +151,6 @@ public class AbstractExcelWriter {
                     if (gerundeteArbeitstage == 0) gerundeteArbeitstage = 1;
 
 
-                    double gerundeterStundensatz = stundensatz * 10;
-                    gerundeterStundensatz = Math.round(gerundeterStundensatz);
-                    System.out.println("gerundeter stundensatz: " + gerundeterStundensatz);
-                    gerundeterStundensatz = gerundeterStundensatz / 10;
-                    System.out.println("gerundeter stundensatz: " + gerundeterStundensatz);
-
 
                     // Prüfen, ob die Anzahl der Arbeitstage, die "gearbeitet wurden" auch in den Monat passen
                     // Das ist nicht der Fall, wenn bspw. der Stundenlohn im Vergleich zum svBrutto sehr niedrig ist und die Person hätte zu viele Stunden bzw. Tage arbeiten müssen, um das zu erreichen
@@ -163,7 +166,7 @@ public class AbstractExcelWriter {
                         sum += value;
                     }
                     for (int j = 0; j < arbeitszeiten.length; j++) {
-                        arbeitszeiten[j] = arbeitszeiten[j] * (gerundeterStundensatz / sum);
+                        arbeitszeiten[j] = arbeitszeiten[j] * (stundensatz / sum);
                     }
                     double sumAfter = 0;
                     for (double value : arbeitszeiten) {
@@ -187,19 +190,12 @@ public class AbstractExcelWriter {
                     System.out.println(listOfIndices);
 
                     for (int j = 0; j < arbeitszeiten.length; j++) {
-                        werktage[listOfIndices.get(j)] = decimalFormat.format(arbeitszeiten[j]);
+                        werktage[listOfIndices.get(j)] = decimalFormat.format(Math.floor(arbeitszeiten[j] * 100) / 100);
 //                werktage[listOfIndices.get(i)] = String.valueOf(arbeitszeiten[i]);
                         System.out.println(Arrays.asList(werktage));
                         System.out.println(">> " + tempcounter + " <<");
                     }
 
-                    double zaahl = 0;
-                    System.out.println(Arrays.asList(werktage));
-                    for (String werktag : werktage) {
-                        if (werktag != null) System.out.println(zaahl += Double.parseDouble(werktag.replace(",", ".")));
-                    }
-                    System.out.println(zaahl);
-                    System.out.println(">> " + tempcounter + " <<");
 
 
                     try {
@@ -236,8 +232,8 @@ public class AbstractExcelWriter {
                                 else hourMinutes += "0" + stunden + ":";
                                 if (minuten >= 10) hourMinutes += String.valueOf(minuten).split("\\.")[0];
                                 else hourMinutes += "0" + String.valueOf(minuten).split("\\.")[0];
-                                if (sekunden >= 10) hourMinutes += ":" + (int) sekunden;
-                                else hourMinutes += ":" + "0" + (int) sekunden;
+//                                if (sekunden >= 10) hourMinutes += ":" + (int) sekunden;
+//                                else hourMinutes += ":" + "0" + (int) sekunden;
 
                                 arbeitszeitenCells.get(k).getRow().getCell(arbeitszeitenCells.get(k).getColumnIndex() - 1).setCellValue(hourMinutes);
                             } else {
@@ -310,7 +306,7 @@ public class AbstractExcelWriter {
                     pdfGenerator.createPdf(workbook, outputPath, fileName);
                 }
 
-////                 PDF-Output-Dateien
+////              PDF-Output-Dateien
 //                PdfGenerator pdfGenerator = new PdfGenerator();
 //                pdfGenerator.createPdf(workbook, outputPath, monatsliste.get(0).getAbrechnungsmonat().replace("/", "-"));
 

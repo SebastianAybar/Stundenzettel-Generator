@@ -172,15 +172,15 @@ public class PdfGenerator {
                         if (!zelleAlsString.isEmpty()) {
                             int stunde = Integer.parseInt(zelleAlsString.split(":")[0]);
                             int minute = Integer.parseInt(zelleAlsString.split(":")[1]);
-                            int sekunde = Integer.parseInt(zelleAlsString.split(":")[2]);
+                            //int sekunde = Integer.parseInt(zelleAlsString.split(":")[2]);
                             insgArbeitszeitStunden += stunde;
                             insgArbeitszeitMinuten += minute;
-                            insgArbeitszeitSekunden += sekunde;
-
-                            if (insgArbeitszeitSekunden >= 60) {
-                                insgArbeitszeitMinuten += insgArbeitszeitSekunden / 60;
-                                insgArbeitszeitSekunden %= 60;
-                            }
+//                            insgArbeitszeitSekunden += sekunde;
+//
+//                            if (insgArbeitszeitSekunden >= 60) {
+//                                insgArbeitszeitMinuten += insgArbeitszeitSekunden / 60;
+//                                insgArbeitszeitSekunden %= 60;
+//                            }
 
                             if (insgArbeitszeitMinuten >= 60) {
                                 insgArbeitszeitStunden += insgArbeitszeitMinuten / 60;
@@ -226,10 +226,10 @@ public class PdfGenerator {
 
         if (insgArbeitszeitStunden >= 10) insgArbeitszeit += insgArbeitszeitStunden + ":";
         else insgArbeitszeit += "0" + insgArbeitszeitStunden + ":";
-        if (insgArbeitszeitMinuten >= 10) insgArbeitszeit += insgArbeitszeitMinuten + ":";
-        else insgArbeitszeit += "0" + insgArbeitszeitMinuten + ":";
-        if (insgArbeitszeitSekunden >= 10) insgArbeitszeit += insgArbeitszeitSekunden;
-        else insgArbeitszeit += "0" + insgArbeitszeitSekunden;
+        if (insgArbeitszeitMinuten >= 10) insgArbeitszeit += insgArbeitszeitMinuten;
+        else insgArbeitszeit += "0" + insgArbeitszeitMinuten;
+//        if (insgArbeitszeitSekunden >= 10) insgArbeitszeit += insgArbeitszeitSekunden;
+//        else insgArbeitszeit += "0" + insgArbeitszeitSekunden;
 
         addSummenzeileToStundenTabelle(stundenzettelTabelle, insgArbeitszeit, insgDezimal, insgArbeitszeitNetto);
 

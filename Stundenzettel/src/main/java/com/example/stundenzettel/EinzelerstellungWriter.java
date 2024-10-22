@@ -3,8 +3,6 @@ package com.example.stundenzettel;
 import de.focus_shift.jollyday.core.Holiday;
 import de.focus_shift.jollyday.core.HolidayManager;
 import de.focus_shift.jollyday.core.ManagerParameters;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.poi.ss.usermodel.*;
 
@@ -18,7 +16,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.*;
 
@@ -26,7 +23,7 @@ import static com.example.stundenzettel.Attribute.DOCUMENT_FILE_SUFFIX;
 import static com.example.stundenzettel.Attribute.PATH_DATEI_STUNDENZETTELVORLAGE;
 import static java.util.Locale.GERMANY;
 
-public class EinzelerstellungReader {
+public class EinzelerstellungWriter {
 
     //    private final String pathTemplate = PATH_DATEI_STUNDENZETTELVORLAGE;
     private final String BUNDESLAND = "he";
@@ -36,7 +33,7 @@ public class EinzelerstellungReader {
     private final String svBrutto;
     private final String name;
 
-    EinzelerstellungReader(String abrechnungsmonat, String mitarbeiternummer, String svBrutto, String name) {
+    EinzelerstellungWriter(String abrechnungsmonat, String mitarbeiternummer, String svBrutto, String name) {
         this.abrechnungsmonat = abrechnungsmonat;
         this.mitarbeiternummer = mitarbeiternummer;
         this.svBrutto = svBrutto;
@@ -46,7 +43,7 @@ public class EinzelerstellungReader {
     public void writeToExcelEinzelerstellung(String outputPath, String lohn, boolean isErsetzenSelected) {
         try {
             String resourceFilePath = "/Stundenzettel_Vorlage.xlsx";
-            InputStream resourceStream = AbstractExcelWriter.class.getResourceAsStream(resourceFilePath);
+            InputStream resourceStream = EinzelerstellungWriter.class.getResourceAsStream(resourceFilePath);
 
             if (resourceStream == null) {
                 System.err.println("File not found in resources: " + resourceFilePath);
@@ -63,7 +60,6 @@ public class EinzelerstellungReader {
             } else {
                 System.out.println("Vorlage existiert bereits im Verzeichnis: " + PATH_DATEI_STUNDENZETTELVORLAGE);
             }
-
 
             InputStream inputStream = new FileInputStream(PATH_DATEI_STUNDENZETTELVORLAGE);
             Workbook workbook = WorkbookFactory.create(inputStream);
@@ -139,12 +135,15 @@ public class EinzelerstellungReader {
             System.out.println("stundensatz: " + stundensatz);
             if (gerundeteArbeitstage == 0) gerundeteArbeitstage = 1;
 
-            double gerundeterStundensatz = stundensatz * 10;
-            gerundeterStundensatz = Math.round(gerundeterStundensatz);
-            System.out.println("gerundeter stundensatz: " + gerundeterStundensatz);
-            gerundeterStundensatz = gerundeterStundensatz / 10;
-            System.out.println("gerundeter stundensatz: " + gerundeterStundensatz);
+//            double gerundeterStundensatz = stundensatz * 10;
+//            gerundeterStundensatz = Math.round(gerundeterStundensatz);
+//            System.out.println("gerundeter stundensatz: " + gerundeterStundensatz);
+//            gerundeterStundensatz = gerundeterStundensatz / 10;
+//            System.out.println("gerundeter stundensatz: " + gerundeterStundensatz);
 
+
+            System.out.println("arbeitszeitenCells.size: " + arbeitszeitenCells.size());
+            System.out.println("arbeitszeitenCells: " + arbeitszeitenCells);
 
             // Prüfen, ob die Anzahl der Arbeitstage, die "gearbeitet wurden" auch in den Monat passen
             // Das ist nicht der Fall, wenn bspw. der Stundenlohn im Vergleich zum svBrutto sehr niedrig ist und die Person hätte zu viele Stunden bzw. Tage arbeiten müssen, um das zu erreichen
@@ -161,7 +160,7 @@ public class EinzelerstellungReader {
                 sum += value;
             }
             for (int j = 0; j < arbeitszeiten.length; j++) {
-                arbeitszeiten[j] = arbeitszeiten[j] * (gerundeterStundensatz / sum);
+                arbeitszeiten[j] = arbeitszeiten[j] * (stundensatz / sum);
             }
             double sumAfter = 0;
             for (double value : arbeitszeiten) {
@@ -186,19 +185,19 @@ public class EinzelerstellungReader {
             System.out.println(listOfIndices);
 
             for (int i = 0; i < arbeitszeiten.length; i++) {
-                werktage[listOfIndices.get(i)] = decimalFormat.format(arbeitszeiten[i]);
+                werktage[listOfIndices.get(i)] = decimalFormat.format(Math.floor(arbeitszeiten[i] * 100) / 100);
 //                werktage[listOfIndices.get(i)] = String.valueOf(arbeitszeiten[i]);
                 System.out.println(Arrays.asList(werktage));
                 System.out.println(">> " + tempcounter + " <<");
             }
 
-            double zaahl = 0;
-            System.out.println(Arrays.asList(werktage));
-            for (String werktag : werktage) {
-                if (werktag != null) System.out.println(zaahl += Double.parseDouble(werktag.replace(",", ".")));
-            }
-            System.out.println(zaahl);
-            System.out.println(">> " + tempcounter + " <<");
+//            double zahl = 0;
+//            System.out.println(Arrays.asList(werktage));
+//            for (String werktag : werktage) {
+//                if (werktag != null) System.out.println(zahl += Double.parseDouble(werktag.replace(",", ".")));
+//            }
+//            System.out.println(zahl);
+//            System.out.println(">> " + tempcounter + " <<");
 
             try {
                 //Wir befüllen die Spalten, Dezimal, Arbeitszeit Netto, Aufgezeichnet am, und Arbeitszeit
@@ -234,8 +233,8 @@ public class EinzelerstellungReader {
                         else hourMinutes += "0" + stunden + ":";
                         if (minuten >= 10) hourMinutes += String.valueOf(minuten).split("\\.")[0];
                         else hourMinutes += "0" + String.valueOf(minuten).split("\\.")[0];
-                        if (sekunden >= 10) hourMinutes += ":" + (int) sekunden;
-                        else hourMinutes += ":" + "0" + (int) sekunden;
+                        //if (sekunden >= 10) hourMinutes += ":" + (int) sekunden;
+                        //else hourMinutes += ":" + "0" + (int) sekunden;
 
 
                         arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() - 1).setCellValue(hourMinutes);
@@ -253,6 +252,8 @@ public class EinzelerstellungReader {
 //            try (FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\MM\\Downloads\\test\\test.xlsx")) {
 //                workbook.write(fileOutputStream);
 //            }
+
+            System.out.println("arbeitszeitenCells: " + arbeitszeitenCells);
 
             String fileName = abrechnungsmonat.replace("/", "-");
             String filePathWithName = outputPath + "\\" + fileName + DOCUMENT_FILE_SUFFIX;
