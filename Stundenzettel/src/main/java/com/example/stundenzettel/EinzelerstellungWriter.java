@@ -210,7 +210,7 @@ public class EinzelerstellungWriter {
                         //Wir befüllen die Spalte "Dezimal"
                         DecimalFormat df = new DecimalFormat("#.00");
                         double arbeitszeit = Double.parseDouble(werktage[i].replace(",", "."));
-                        //Wir befüllen die Spalte "Dezimal"
+
                         if (arbeitszeit < 6) {
                             arbeitszeitenCells.get(i).setCellValue(werktage[i]);
                         } else if (arbeitszeit < 9) {
