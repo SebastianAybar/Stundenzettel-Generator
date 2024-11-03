@@ -208,7 +208,21 @@ public class EinzelerstellungWriter {
                     hourMinutes = "";
                     if (werktage[i] != null) {
                         //Wir befüllen die Spalte "Dezimal"
-                        arbeitszeitenCells.get(i).setCellValue(werktage[i]);
+                        DecimalFormat df = new DecimalFormat("#.00");
+                        double arbeitszeit = Double.parseDouble(werktage[i].replace(",", "."));
+                        //Wir befüllen die Spalte "Dezimal"
+                        if (arbeitszeit < 6) {
+                            arbeitszeitenCells.get(i).setCellValue(werktage[i]);
+                        } else if (arbeitszeit < 9) {
+                            arbeitszeit += 0.5;
+                            String stringArbeitszeit = df.format(arbeitszeit).replace(".", ",");
+                            arbeitszeitenCells.get(i).setCellValue(stringArbeitszeit);
+                        } else {
+                            arbeitszeit += 0.75;
+                            String stringArbeitszeit = df.format(arbeitszeit).replace(".", ",");
+                            arbeitszeitenCells.get(i).setCellValue(stringArbeitszeit);;
+                        }
+
                         //Wir befüllen sie Spalte "Arbeitszeit Netto"
                         arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() + 1).setCellValue(werktage[i]);
                         //Wir befüllen die Spalte "Aufgezeichnet am"
@@ -222,7 +236,7 @@ public class EinzelerstellungWriter {
                         }
                         arbeitszeitenCells.get(i).getRow().getCell(arbeitszeitenCells.get(i).getColumnIndex() + 2).setCellValue(aufgezeichnetAm);
                         //Wir befüllen die Spalte "Arbeitszeit"
-                        String temp = werktage[i].replace(",", ".");
+                        String temp = String.valueOf(arbeitszeit).replace(",", ".");
                         insgMinuten = Double.parseDouble(temp) * 60;
                         stunden = (int) Double.parseDouble(temp);
                         minuten = insgMinuten % 60;
