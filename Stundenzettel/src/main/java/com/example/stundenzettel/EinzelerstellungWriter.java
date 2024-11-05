@@ -207,19 +207,24 @@ public class EinzelerstellungWriter {
                 for (int i = 0; i < arbeitszeitenCells.size(); i++) {
                     hourMinutes = "";
                     if (werktage[i] != null) {
-                        //Wir befüllen die Spalte "Dezimal"
                         DecimalFormat df = new DecimalFormat("#.00");
                         double arbeitszeit = Double.parseDouble(werktage[i].replace(",", "."));
-
+                        //Wir befüllen die Spalte "Dezimal"
                         if (arbeitszeit < 6) {
                             arbeitszeitenCells.get(i).setCellValue(werktage[i]);
                         } else if (arbeitszeit < 9) {
                             arbeitszeit += 0.5;
                             String stringArbeitszeit = df.format(arbeitszeit).replace(".", ",");
+                            if (stringArbeitszeit.endsWith("0")) {
+                                stringArbeitszeit = stringArbeitszeit.substring(0, stringArbeitszeit.length() - 1);
+                            }
                             arbeitszeitenCells.get(i).setCellValue(stringArbeitszeit);
                         } else {
                             arbeitszeit += 0.75;
                             String stringArbeitszeit = df.format(arbeitszeit).replace(".", ",");
+                            if (stringArbeitszeit.endsWith("0")) {
+                                stringArbeitszeit = stringArbeitszeit.substring(0, stringArbeitszeit.length() - 1);
+                            }
                             arbeitszeitenCells.get(i).setCellValue(stringArbeitszeit);;
                         }
 

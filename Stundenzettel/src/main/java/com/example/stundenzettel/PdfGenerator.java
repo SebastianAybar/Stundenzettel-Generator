@@ -307,7 +307,8 @@ public class PdfGenerator {
         pdfZelle = new PdfPCell(zelleninhalt);
         pdfZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
         pdfZelle.setPadding(TBL_STUNDEN_PADDING);
-        stundenTabelle.addCell(pdfZelle);
+        stundenTabelle.addCell("");
+//        stundenTabelle.addCell(pdfZelle);
 
         // Zelle: Dezimal
         zelleninhalt = new Phrase(insgSummenFormat.format(insgDezimal), TBL_STUNDEN_FETT_FONT);
